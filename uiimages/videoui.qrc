@@ -1,0 +1,29 @@
+<RCC>
+    <qresource prefix="/">
+        <file>videoui.qrc</file>
+        <file>desktop/alarm.png</file>
+        <file>desktop/capture.png</file>
+        <file>desktop/collapse.png</file>
+        <file>desktop/connect.png</file>
+        <file>desktop/desktop.png</file>
+        <file>desktop/exchange.png</file>
+        <file>desktop/expand.png</file>
+        <file>desktop/fix.png</file>
+        <file>desktop/home.png</file>
+        <file>desktop/more.png</file>
+        <file>desktop/net.png</file>
+        <file>desktop/pen.png</file>
+        <file>desktop/question.png</file>
+        <file>desktop/refresh.png</file>
+        <file>desktop/repair.png</file>
+        <file>desktop/restart.png</file>
+        <file>desktop/save.png</file>
+        <file>desktop/scissors.png</file>
+        <file>desktop/upload.png</file>
+        <file>desktop/wall.png</file>
+        <file>desktop/zoomIn.png</file>
+        <file>desktop/disconnect.png</file>
+        <file>desktop/set.png</file>
+        <file>desktop/shelly.ico</file>
+    </qresource>
+</RCC>
