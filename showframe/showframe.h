@@ -29,6 +29,7 @@ using namespace std;
 #include "highgui.h"
 #include <QTcpSocket>
 #include <QUdpSocket>
+#include <QMessageBox>
 #include <QHBoxLayout>
 #include <QGridLayout>
 #include <QPaintEvent>

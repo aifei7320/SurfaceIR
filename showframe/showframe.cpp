@@ -103,6 +103,7 @@ ShowFrame::ShowFrame(QWidget *parent) : QLabel(parent),
 void ShowFrame::setID(const quint8 id)
 {
     myID = id; 
+    setObjectName(QString::number(id));
 }
 
 void ShowFrame::initToolButton()
@@ -177,7 +178,7 @@ bool ShowFrame::event(QEvent *e)
 
         QHoverEvent *hoverEvent = static_cast<QHoverEvent*>(e);
         qDebug()<<"event point"<<hoverEvent->pos();
-        tipLabel->move(mapToGlobal(hoverEvent->pos() += QPoint(15, 0) ));
+        tipLabel->move(mapToGlobal(hoverEvent->pos() += QPoint(15, 0) ));//直接在鼠标下显示不行，鼠标不能遮挡label
         tipLabel->setText(QString("r:\t") + QString::number(r) + "\n" +QString("g:\t") + QString::number(g) + "\n" + QString("b:\t") + QString::number(b) );
         //模拟刷新显示
         tipLabel->hide();
@@ -284,6 +285,7 @@ void ShowFrame::on_playAndStopButton_clicked()
             else{
                 delete m_pThrd;
                 m_pThrd = NULL;
+                QMessageBox::warning(this, "error", "device open failed!");
                 cout << "Thread not generated" << endl;
             }
         }
@@ -410,20 +412,20 @@ void ShowFrame::displayFrame()
     if (isConnected){
         if (isRecording){
             if(flash){
-                setStyleSheet("QLabel{border: 2px solid red;}");
+                setStyleSheet(QString("QLabel#%1{border: 2px solid red;}").arg(myID));
                 flash = false;
             }
             else{
-                setStyleSheet("QLabel{border: 2px solid white;}");
+                setStyleSheet(QString("QLabel#%1{border: 2px solid white;}").arg(myID));
                 flash = true; 
             }
         } else {
             if(flash){
-                setStyleSheet("QLabel{border: 2px solid green;}");
+                setStyleSheet(QString("QLabel#%1{border: 2px solid green;}").arg(myID));
                 flash = false;
             }
             else{
-                setStyleSheet("QLabel{border: 2px solid white;}");
+                setStyleSheet(QString("QLabel#%1{border: 2px solid white;}").arg(myID));
                 flash = true; 
             }
         }
@@ -437,8 +439,10 @@ void ShowFrame::on_colorButton_clicked()
 
 void ShowFrame::on_recordButton_clicked()
 {
-    isRecording = true;
-
+    if(isRecording)
+        isRecording = false;
+    else
+        isRecording = true;
 }
 
 void ShowFrame::on_sourceChangeButton_clicked()

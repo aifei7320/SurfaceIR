@@ -25,25 +25,50 @@ void ToolButton::enterEvent(QEvent *e)
     QGraphicsOpacityEffect *eff = new QGraphicsOpacityEffect(this);
     setGraphicsEffect(eff);
     QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
-    a->setDuration(5000);
-    a->setStartValue(1);
-    a->setEndValue(0);
+    a->setDuration(100);
+    a->setStartValue(0);
+    a->setEndValue(0.5);
     a->setEasingCurve(QEasingCurve::InBack);
     a->start();
 
 }
 
-void ToolButton::releaseEvent(QEvent *e)
+void ToolButton::leaveEvent(QEvent *e)
 {
     QGraphicsOpacityEffect *eff = new QGraphicsOpacityEffect(this);
     setGraphicsEffect(eff);
     QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
-    a->setDuration(1000);
-    a->setStartValue(1);
+    a->setDuration(5000);
+    a->setStartValue(0.5);
     a->setEndValue(0);
     a->setEasingCurve(QEasingCurve::InBack);
     a->start();
 }
+
+void ToolButton::mouseReleaseEvent(QEvent *e)
+{
+    QGraphicsOpacityEffect *eff = new QGraphicsOpacityEffect(this);
+    setGraphicsEffect(eff);
+    QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
+    a->setDuration(100);
+    a->setStartValue(1);
+    a->setEndValue(0.5);
+    a->setEasingCurve(QEasingCurve::InBack);
+    a->start();
+}
+
+void ToolButton::mousePressEvent(QMouseEvent *e)
+{
+    QGraphicsOpacityEffect *eff = new QGraphicsOpacityEffect(this);
+    setGraphicsEffect(eff);
+    QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
+    a->setDuration(100);
+    a->setStartValue(0.5);
+    a->setEndValue(1);
+    a->setEasingCurve(QEasingCurve::InBack);
+    a->start();
+}
+
 
 void ToolButton::paintEvent(QPaintEvent *e)
 {
