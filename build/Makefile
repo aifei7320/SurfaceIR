@@ -54,6 +54,7 @@ SOURCES       = ../showframe/buttonadd/buttonadd.cpp \
 		../showframe/recordthread/recordthread.cpp \
 		../showframe/network/network.cpp \
 		../showframe/tethread/te_thread.cpp \
+		../showframe/tethread/colormap.cpp \
 		../showframe/showframe.cpp \
 		../main.cpp \
 		../mainwindow.cpp \
@@ -74,6 +75,7 @@ OBJECTS       = buttonadd.o \
 		recordthread.o \
 		network.o \
 		te_thread.o \
+		colormap.o \
 		showframe.o \
 		main.o \
 		mainwindow.o \
@@ -255,6 +257,7 @@ DIST          = ../../../../Qt5.7.1/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		../showframe/recordthread/recordthread.h \
 		../showframe/network/network.h \
 		../showframe/tethread/te_thread.h \
+		../showframe/tethread/colormap.h \
 		../showframe/showframe.h \
 		../mainwindow.h \
 		../basicwidget.h \
@@ -264,6 +267,7 @@ DIST          = ../../../../Qt5.7.1/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		../showframe/recordthread/recordthread.cpp \
 		../showframe/network/network.cpp \
 		../showframe/tethread/te_thread.cpp \
+		../showframe/tethread/colormap.cpp \
 		../showframe/showframe.cpp \
 		../main.cpp \
 		../mainwindow.cpp \
@@ -628,8 +632,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../uiimages/videoui.qrc $(DISTDIR)/
-	$(COPY_FILE) --parents ../showframe/buttonadd/buttonadd.h ../showframe/toolbutton/toolbutton.h ../showframe/configwindow/configwindow.h ../showframe/recordthread/recordthread.h ../showframe/network/network.h ../showframe/tethread/te_thread.h ../showframe/showframe.h ../mainwindow.h ../basicwidget.h ../flatpixmapbutton.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../showframe/buttonadd/buttonadd.cpp ../showframe/toolbutton/toolbutton.cpp ../showframe/configwindow/configwindow.cpp ../showframe/recordthread/recordthread.cpp ../showframe/network/network.cpp ../showframe/tethread/te_thread.cpp ../showframe/showframe.cpp ../main.cpp ../mainwindow.cpp ../basicwidget.cpp ../flatpixmapbutton.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../showframe/buttonadd/buttonadd.h ../showframe/toolbutton/toolbutton.h ../showframe/configwindow/configwindow.h ../showframe/recordthread/recordthread.h ../showframe/network/network.h ../showframe/tethread/te_thread.h ../showframe/tethread/colormap.h ../showframe/showframe.h ../mainwindow.h ../basicwidget.h ../flatpixmapbutton.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../showframe/buttonadd/buttonadd.cpp ../showframe/toolbutton/toolbutton.cpp ../showframe/configwindow/configwindow.cpp ../showframe/recordthread/recordthread.cpp ../showframe/network/network.cpp ../showframe/tethread/te_thread.cpp ../showframe/tethread/colormap.cpp ../showframe/showframe.cpp ../main.cpp ../mainwindow.cpp ../basicwidget.cpp ../flatpixmapbutton.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -2307,6 +2311,9 @@ te_thread.o: ../showframe/tethread/te_thread.cpp ../showframe/tethread/te_thread
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qobject_impl.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o te_thread.o ../showframe/tethread/te_thread.cpp
+
+colormap.o: ../showframe/tethread/colormap.cpp ../showframe/tethread/colormap.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o colormap.o ../showframe/tethread/colormap.cpp
 
 showframe.o: ../showframe/showframe.cpp ../showframe/showframe.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/QMap \

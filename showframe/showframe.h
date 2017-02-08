@@ -38,12 +38,15 @@ using namespace std;
 #include <QCoreApplication>
 #include "network/network.h"
 #include <QVariantAnimation>
+#include "i3system_imgproc.h"
 #include <QPropertyAnimation>
+#include "tethread/colormap.h"
 #include "tethread/te_thread.h"
 #include "buttonadd/buttonadd.h"
 #include "toolbutton/toolbutton.h"
 #include <QGraphicsColorizeEffect>
 #include "configwindow/configwindow.h"
+#include "opencv2/imgproc/imgproc.hpp"
 
 #include "i3system_TE.h"
 
@@ -71,8 +74,8 @@ protected:
 
 private:
     void initToolButton();
-    //QPixmap cvMatToQPixmap( const cv::Mat &inMat );
-    //QImage  cvMatToQImage( const cv::Mat &inMat );
+    QPixmap cvMatToQPixmap( const cv::Mat &inMat );
+    QImage  cvMatToQImage( const cv::Mat &inMat );
 
 private:
     QHBoxLayout *toolBtnLayout;
@@ -110,7 +113,15 @@ private:
     bool m_bFullScr;
 
     cv::Mat mymat;
+
+    bool m_bAGC, m_bAIE;
+    bool m_bAlarm;
+    float m_fAlarm;
+    int m_iColorMap;
     
+    float m_fContrast;
+    int m_iBrightness;
+    ushort m_iAIERange;
 
 private slots:
     void on_recordButton_clicked();
@@ -123,6 +134,7 @@ private slots:
     void connectionEstablish();
     void displayFrame();
     void delTipLabel();
+    void showImage(ushort *pRecvImage, float *_pTemp, float _centerTemp, ushort _width, ushort _height);
 };
 
 #endif
