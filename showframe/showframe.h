@@ -13,7 +13,9 @@ using namespace std;
 #define _SHOWFRAME_H_
 
 #include <QMap>
+#include "cv.hpp"
 #include <QTimer>
+#include <QImage>
 #include <QFrame>
 #include <QLabel>
 #include <QDebug>
@@ -24,21 +26,28 @@ using namespace std;
 #include <QVector>
 #include <QPalette>
 #include "opencv.hpp"
-#include "cv.hpp"
 #include "highgui.h"
+#include <QTcpSocket>
+#include <QUdpSocket>
 #include <QHBoxLayout>
 #include <QGridLayout>
 #include <QPaintEvent>
 #include <QHoverEvent>
 #include <QResizeEvent>
+#include <QHostAddress>
 #include <QCoreApplication>
+#include "network/network.h"
 #include <QVariantAnimation>
 #include <QPropertyAnimation>
-#include "../network/network.h"
+//#include "tethread/te_thread.h"
 #include "buttonadd/buttonadd.h"
 #include "toolbutton/toolbutton.h"
 #include <QGraphicsColorizeEffect>
 #include "configwindow/configwindow.h"
+
+#include "i3system_TE.h"
+
+class TE_Thread;
 
 class ShowFrame :  public QLabel
 {
@@ -57,12 +66,14 @@ protected:
     void mouseReleaseEvent(QMouseEvent *e);
     void mouseDoubleClickEvent(QMouseEvent *e);
 
-    Network *network;
+    //NetworkThread *networkThread;
     ButtonAdd *psbAdd; //添加设备按钮
 
 
 private:
     void initToolButton();
+    //QPixmap cvMatToQPixmap( const cv::Mat &inMat );
+    //QImage  cvMatToQImage( const cv::Mat &inMat );
 
 private:
     QHBoxLayout *toolBtnLayout;
@@ -92,6 +103,12 @@ private:
     ToolButton *saveButton;
 
     QLabel *tipLabel;//tip
+    TE_Thread *m_pThrd;
+
+    QTcpSocket *confSocket;
+    QUdpSocket *dataSocket;
+    
+    bool m_bFullScr;
 
     cv::Mat mymat;
     
@@ -104,6 +121,7 @@ private slots:
     void display(QImage &image);//更新图像数据
     void on_psbAdd_clicked();//添加设备按钮
     void setDeviceIP(const QString);
+    void connectionEstablish();
     void displayFrame();
     void delTipLabel();
 };

@@ -8,7 +8,6 @@ INCLUDEPATH += .
 QT += core widgets gui network
 
 include(showframe/showframe.pri)
-include(network/network.pri)
 
 # Input
 HEADERS +=  mainwindow.h \
@@ -21,11 +20,23 @@ SOURCES +=  main.cpp \
 
 unix:{
 message("compile unix")
-LIBS += /usr/local/lib/lib*.so*
+unix:!macx: LIBS += -L/usr/local/lib -li3system_te_64 -li3system_usb_64 -li3system_imgproc_64
+
+INCLUDEPATH += /usr/local/include/i3system
+DEPENDPATH += /usr/local/include/i3system
+
+#libusb
+unix:!macx: LIBS += -L/usr/share/doc/ -lusb-1.0
+
+#opencv
 INCLUDEPATH += /usr/local/include/opencv2 \
                 /usr/local/include/opencv \
-                /usr/local/include 
+                /usr/local/include
+
+unix:!macx: LIBS += -L/usr/local/lib -lopencv_core -lopencv_highgui -lopencv_contrib -lopencv_imgproc
 }
+
+
 
 RESOURCES += uiimages/videoui.qrc
 

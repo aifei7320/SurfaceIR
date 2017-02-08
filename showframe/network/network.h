@@ -5,25 +5,31 @@
     > Created Time: 2017年01月20日 星期五 17时29分19秒
  ************************************************************************/
 
-#include <iostream>
-#include <unistd.h>
-using namespace std;
-
 #ifndef _NETWORK_H_
 #define _NETWORK_H_
 
+#include <QObject>
 #include <QThread>
 #include <QTcpSocket>
+#include <QUdpSocket>
 #include <QDataStream>
+#include <QHostAddress>
 
-class Network :  public QThread
+class NetworkThread : public QThread
 {
     Q_OBJECT
 public:
-    Network(QString remoteIP, quint16 port);
+    NetworkThread(QString remoteIP, quint16 port);
 
+signals:
+    void sendFrame(QImage &image);
+protected:
+    void run();
 private:
-    QTcpSocket *socket;
+    QTcpSocket *tcpSocket;
+    QUdpSocket *udpSocket;
+private slots:
+    void connectEstablished();
 };
 
 #endif

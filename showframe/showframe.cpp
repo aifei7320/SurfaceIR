@@ -18,6 +18,8 @@ ShowFrame::ShowFrame(QWidget *parent) : QLabel(parent),
 
     setStyleSheet("QLabel{background-color:darkCyan}");
 
+    confSocket = new QTcpSocket(this);
+    dataSocket = new QUdpSocket(this);
 
     frameTimer = new QTimer;
     tipTimer = new QTimer;
@@ -60,6 +62,8 @@ ShowFrame::ShowFrame(QWidget *parent) : QLabel(parent),
 
     connect(frameTimer, SIGNAL(timeout()), this, SLOT(displayFrame()));
     connect(psbAdd, SIGNAL(clicked()), this, SLOT(on_psbAdd_clicked()));
+    connect(confSocket, SIGNAL(readyRead()), this, SLOT(readDevConf()));
+    connect(dataSocket, SIGNAL(readyRead()), this, SLOT(getImageFrame()));
     connect(colorButton, SIGNAL(clicked()), this, SLOT(on_colorButton_clicked()));
     connect(recordButton, SIGNAL(clicked()), this, SLOT(on_recordButton_clicked()));
     connect(tempChangeButton, SIGNAL(clicked()), this, SLOT(on_tempChangeButton_clicked()));
@@ -209,10 +213,12 @@ void ShowFrame::mouseDoubleClickEvent(QMouseEvent *e)
         if(isMaximized()){
             setWindowFlags(windowFlags() & (~Qt::Dialog));
            showNormal(); 
+                m_bFullScr = false;
         } else {
             setWindowFlags(windowFlags() | Qt::Dialog);
             if(!isMaximized()){
                 this->showMaximized();
+                m_bFullScr = true;
             }
         }
         
@@ -231,6 +237,18 @@ void ShowFrame::on_psbAdd_clicked()
     ConfigWindow *cw = new ConfigWindow;
     connect(cw, SIGNAL(Conform(QString)), this, SLOT(setDeviceIP(const QString)));
     cw->exec();
+    //if(!m_pThrd){
+    //    m_pThrd = new TE_Thread(this);
+    //    if(m_pThrd->Initialize()){
+    //        connect(m_pThrd, SIGNAL(SignalShowImg(ushort*, float *, float, ushort, ushort)), this, SLOT(SlotImgShow(ushort*, float *, float, ushort, ushort)) );
+    //        m_pThrd->start();
+    //    }
+    //    else{
+    //        delete m_pThrd;
+    //        m_pThrd = NULL;
+    //        cout << "Thread not generated" << endl;
+    //    }
+    //}
 }
 
 void ShowFrame::setDeviceIP(const QString IP)
@@ -238,6 +256,9 @@ void ShowFrame::setDeviceIP(const QString IP)
     isConnected = true;
     psbAdd->setHidden(true);
     deviceIP = IP;
+    confSocket->connectToHost(QHostAddress(deviceIP), 8800);
+    connect(confSocket, SIGNAL(connected()), this, SLOT(connectionEstablish()));
+    dataSocket->bind(QHostAddress(deviceIP), 8801);
     QPixmap pixmap(width(), height());
 #ifdef WIN32
     if (!pixmap.load(QString("d:/work/SurfaceIR/temp/%1.jpg").arg(myID)) )
@@ -273,6 +294,87 @@ void ShowFrame::displayFrame()
             }
         }
     }
+    //Mat matAIE(_height, _width, CV_8UC1);
+    //Mat mat16(_height, _width, CV_16U, pRecvImage), mat8UC1, mat8ColorMap, matOut;
+    //if(!m_bAGC)
+    //    mat16.convertTo(mat8UC1, CV_8UC1, m_fContrast / 256.f, m_iBrightness);
+    //else
+    //    mat16.convertTo(mat8UC1, CV_8UC1, 1/256., 0.);
+
+    ////Mat matAIE;
+    //if(m_bAIE){
+    //    AIE(mat8UC1, matAIE, (double)m_iAIERange / 100.0);
+    //}
+    //else{
+    //    matAIE = mat8UC1.clone();
+    //}
+
+    //int nWidth, nHeight;
+    //if(m_bFullScr){
+    //    nHeight = m_pFullScr->geometry().height();
+    //    nWidth = (int)(nHeight / 0.75 + 0.5);
+    //}
+    //else{
+    //    nWidth = ui->Display->geometry().width(), nHeight = ui->Display->geometry().height();
+    //}
+
+    //// AIE -> Color -> resize
+    //Mat mat8UC3(matAIE.size(), CV_8UC3);
+    //Mat in[] = {matAIE, matAIE, matAIE};
+    //merge(in, 3, mat8UC3);
+
+    ////switch(m_iColorMap){
+    ////    case I3ColorMap::BlackHot:{
+    ////                                  LUT(mat8UC3, m_lutBlackHot, mat8ColorMap);
+    ////                                  break;
+    ////                              }
+    ////    case I3ColorMap::Iron:{
+    ////                              LUT(mat8UC3, m_lutIron, mat8ColorMap);
+    ////                              break;
+    ////                          }
+    ////    case I3ColorMap::Purple:{
+    ////                                LUT(mat8UC3, m_lutPurple, mat8ColorMap);
+    ////                                break;
+    ////                            }
+    ////    case I3ColorMap::PurpleYellow:{
+    ////                                      LUT(mat8UC3, m_lutPurpleYellow, mat8ColorMap);
+    ////                                      break;
+    ////                                  }
+    ////    case I3ColorMap::Rainbow:{
+    ////                                 LUT(mat8UC3, m_lutRainbow, mat8ColorMap);
+    ////                                 break;
+    ////                             }
+    ////    case I3ColorMap::WhiteHot:{
+    ////                                  mat8ColorMap = mat8UC3.clone();
+    ////                                  break;
+    ////                              }
+    ////}
+
+    //// Alarm
+    ////Mat matAlarm(mat8ColorMap.size(), CV_8UC3);
+    ////if(m_bAlarm){
+    ////    SetAlarm(mat8ColorMap, &matAlarm, _pTemp, m_fAlarm);
+    ////}
+    ////else{
+    ////    matAlarm = mat8ColorMap.clone();
+    ////}
+
+    //cv::resize(matAlarm, matOut, Size(nWidth, nHeight));
+
+    //QPixmap image = cvMatToQPixmap(matOut);
+    ////DrawInfo(&image, pRecvImage, _centerTemp, nWidth, nHeight);
+
+    //// Display
+    //if(m_bFullScr){
+    //    m_pFullScr->setPixmap(image);
+    //}
+    //else{
+    //    ui->Display->setPixmap(image);
+    //}
+
+    //delete pRecvImage;
+    //if(_pTemp)
+    //    delete _pTemp;
 }
 
 void ShowFrame::on_colorButton_clicked()
@@ -296,8 +398,76 @@ void ShowFrame::on_tempChangeButton_clicked()
 
 }
 
+void ShowFrame::connectionEstablish()
+{
+
+}
+
 void ShowFrame::delTipLabel()
 {
     tipTimer->stop();
     tipLabel->hide();
 }
+
+//inline QPixmap ShowFrame::cvMatToQPixmap( const cv::Mat &inMat )
+//{
+//    return QPixmap::fromImage( cvMatToQImage( inMat ) );
+//}
+//
+//inline QImage  ShowFrame::cvMatToQImage( const cv::Mat &inMat )
+//{
+//    switch ( inMat.type() )
+//    {
+//        // 8-bit, 4 channel
+//        case CV_8UC4:
+//            {
+//                QImage image( inMat.data,
+//                        inMat.cols, inMat.rows,
+//                        static_cast<int>(inMat.step),
+//                        QImage::Format_ARGB32 );
+//
+//                return image;
+//            }
+//
+//            // 8-bit, 3 channel
+//        case CV_8UC3:
+//            {
+//                QImage image( inMat.data,
+//                        inMat.cols, inMat.rows,
+//                        static_cast<int>(inMat.step),
+//                        QImage::Format_RGB888 );
+//
+//                return image.rgbSwapped();
+//            }
+//
+//            // 8-bit, 1 channel
+//        case CV_8UC1:
+//            {
+//                static QVector<QRgb>  sColorTable( 256 );
+//
+//                // only create our color table the first time
+//                if ( sColorTable.isEmpty() )
+//                {
+//                    for ( int i = 0; i < 256; ++i )
+//                    {
+//                        sColorTable[i] = qRgb( i, i, i );
+//                    }
+//                }
+//
+//                QImage image( inMat.data,
+//                        inMat.cols, inMat.rows,
+//                        static_cast<int>(inMat.step),
+//                        QImage::Format_Indexed8 );
+//
+//                image.setColorTable( sColorTable );
+//
+//                return image;
+//            }
+//
+//        default:
+//            qWarning() << "ASM::cvMatToQImage() - cv::Mat image type not handled in switch:" << inMat.type();
+//            break;
+//    }
+//
+//    return QImage();
+//}

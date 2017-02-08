@@ -6,15 +6,30 @@
  ************************************************************************/
 
 #include <iostream>
+#include "network.h"
 #include <unistd.h>
 using namespace std;
 
-#include <iostream>
-#include <unistd.h>
-using namespace std;
 
 
-Network::Network(QString ip, quint16 port), QThread()
+NetworkThread::NetworkThread(QString ip, quint16 port): QThread()
 {
+    udpSocket = new QUdpSocket;
+    udpSocket->bind(QHostAddress(ip), port);
 
+    tcpSocket = new QTcpSocket;       
+    tcpSocket->connectToHost(ip, port);
+    connect(tcpSocket, SIGNAL(connected()), this, SLOT(connectEstablished()));
+}
+
+void NetworkThread::connectEstablished()
+{
+    
+}
+
+void NetworkThread::run()
+{
+    while(1){
+
+    }
 }
