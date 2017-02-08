@@ -33,7 +33,8 @@ enum CbColorMapIndex{
 
 ShowFrame::ShowFrame(QWidget *parent) : QLabel(parent),
     isConnected(false), moving(false), isRecording(false),
-    flash(false), m_iColorMap(I3ColorMap::Iron), m_bAGC(true)
+    flash(false), m_iColorMap(I3ColorMap::Iron), m_bAGC(true),
+    isplaying(false)
 {
 
     setStyleSheet("QLabel{background-color:darkCyan}");
@@ -71,14 +72,19 @@ ShowFrame::ShowFrame(QWidget *parent) : QLabel(parent),
     saveButton->setMaximumWidth(200);
     saveButton->setText(QString::fromUtf8("保存图片"));
 
+    playAndStopButton = new ToolButton;
+    playAndStopButton->setMaximumWidth(200);
+    playAndStopButton->setText(QString::fromUtf8("开始"));
+
     psbAdd = new ButtonAdd;
     
-    mainLayout->addWidget(psbAdd, 0, 0, 5, 5, Qt::AlignCenter);
-    mainLayout->addWidget(colorButton, 5, 0);
-    mainLayout->addWidget(recordButton, 5, 1);
-    mainLayout->addWidget(sourceChangeButton, 5, 2);
-    mainLayout->addWidget(tempChangeButton, 5, 3);
-    mainLayout->addWidget(saveButton, 5, 4);
+    mainLayout->addWidget(psbAdd, 0, 0, 5, 6, Qt::AlignCenter);
+    mainLayout->addWidget(playAndStopButton, 5, 0);
+    mainLayout->addWidget(colorButton, 5, 1);
+    mainLayout->addWidget(recordButton, 5, 2);
+    mainLayout->addWidget(sourceChangeButton, 5, 3);
+    mainLayout->addWidget(tempChangeButton, 5, 4);
+    mainLayout->addWidget(saveButton, 5, 5);
 
     connect(frameTimer, SIGNAL(timeout()), this, SLOT(displayFrame()));
     connect(psbAdd, SIGNAL(clicked()), this, SLOT(on_psbAdd_clicked()));
@@ -87,6 +93,7 @@ ShowFrame::ShowFrame(QWidget *parent) : QLabel(parent),
     connect(colorButton, SIGNAL(clicked()), this, SLOT(on_colorButton_clicked()));
     connect(recordButton, SIGNAL(clicked()), this, SLOT(on_recordButton_clicked()));
     connect(tempChangeButton, SIGNAL(clicked()), this, SLOT(on_tempChangeButton_clicked()));
+    connect(playAndStopButton, SIGNAL(clicked()), this, SLOT(on_playAndStopButton_clicked()));
     connect(sourceChangeButton, SIGNAL(clicked()), this, SLOT(on_sourceChangeButton_clicked()));
 
     setFrameShape(QFrame::Panel);
@@ -251,6 +258,37 @@ void ShowFrame::display(QImage &image)
 
 }
 
+void ShowFrame::on_playAndStopButton_clicked()
+{
+    if (isplaying){
+        playAndStopButton->setText(QString::fromUtf8("开始"));
+        isplaying = false;
+        if(m_pThrd){
+            disconnect(m_pThrd, SIGNAL(SignalShowImg(ushort*, float *,float, ushort, ushort)), this, SLOT(showImage(ushort*, float *,float, ushort, ushort)) );
+            m_pThrd->StopStream();
+            while(!m_pThrd->ExitThread()){
+                usleep(1000);
+            }
+            delete m_pThrd;
+            m_pThrd=NULL;
+        }
+    } else {
+        playAndStopButton->setText(QString::fromUtf8("停止"));
+        isplaying = true;
+        if(!m_pThrd){
+            m_pThrd = new TE_Thread(this);
+            if(m_pThrd->Initialize()){
+                connect(m_pThrd, SIGNAL(SignalShowImg(ushort*, float *, float, ushort, ushort)), this, SLOT(showImage(ushort*, float *, float, ushort, ushort)) );
+                m_pThrd->start();
+            }
+            else{
+                delete m_pThrd;
+                m_pThrd = NULL;
+                cout << "Thread not generated" << endl;
+            }
+        }
+    }
+}
 
 void ShowFrame::on_psbAdd_clicked()
 {
@@ -258,18 +296,6 @@ void ShowFrame::on_psbAdd_clicked()
     SetColorTable();
     connect(cw, SIGNAL(Conform(QString)), this, SLOT(setDeviceIP(const QString)));
     cw->exec();
-    if(!m_pThrd){
-        m_pThrd = new TE_Thread(this);
-        if(m_pThrd->Initialize()){
-            connect(m_pThrd, SIGNAL(SignalShowImg(ushort*, float *, float, ushort, ushort)), this, SLOT(showImage(ushort*, float *, float, ushort, ushort)) );
-            m_pThrd->start();
-        }
-        else{
-            delete m_pThrd;
-            m_pThrd = NULL;
-            cout << "Thread not generated" << endl;
-        }
-    }
 }
 
 void ShowFrame::setDeviceIP(const QString IP)

@@ -103,6 +103,7 @@ private:
     ToolButton *sourceChangeButton;
     ToolButton *tempChangeButton;
     ToolButton *saveButton;
+    ToolButton *playAndStopButton;
 
     QLabel *tipLabel;//tip
     TE_Thread *m_pThrd;
@@ -122,6 +123,7 @@ private:
     float m_fContrast;
     int m_iBrightness;
     ushort m_iAIERange;
+    bool isplaying;
 
 private slots:
     void on_recordButton_clicked();
@@ -129,6 +131,7 @@ private slots:
     void on_sourceChangeButton_clicked();
     void on_tempChangeButton_clicked();
     void display(QImage &image);//更新图像数据
+    void on_playAndStopButton_clicked();
     void on_psbAdd_clicked();//添加设备按钮
     void setDeviceIP(const QString);
     void connectionEstablish();

@@ -1330,6 +1330,7 @@ moc_showframe.cpp: ../../../Qt5.7.1/5.7/gcc_64/include/QtCore/QMap \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qabstractanimation.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/QPropertyAnimation \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qpropertyanimation.h \
+		../showframe/tethread/colormap.h \
 		../showframe/tethread/te_thread.h \
 		../showframe/buttonadd/buttonadd.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/QPen \
@@ -1510,6 +1511,7 @@ moc_mainwindow.cpp: ../../../Qt5.7.1/5.7/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qabstractanimation.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/QPropertyAnimation \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qpropertyanimation.h \
+		../showframe/tethread/colormap.h \
 		../showframe/tethread/te_thread.h \
 		../showframe/buttonadd/buttonadd.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/QPen \
@@ -2457,6 +2459,7 @@ showframe.o: ../showframe/showframe.cpp ../showframe/showframe.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qabstractanimation.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/QPropertyAnimation \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qpropertyanimation.h \
+		../showframe/tethread/colormap.h \
 		../showframe/tethread/te_thread.h \
 		../showframe/buttonadd/buttonadd.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/QPen \
@@ -2641,6 +2644,7 @@ main.o: ../main.cpp ../../../Qt5.7.1/5.7/gcc_64/include/QtWidgets/QApplication \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qabstractanimation.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/QPropertyAnimation \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qpropertyanimation.h \
+		../showframe/tethread/colormap.h \
 		../showframe/tethread/te_thread.h \
 		../showframe/buttonadd/buttonadd.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/QPen \
@@ -2817,6 +2821,7 @@ mainwindow.o: ../mainwindow.cpp ../mainwindow.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qabstractanimation.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/QPropertyAnimation \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qpropertyanimation.h \
+		../showframe/tethread/colormap.h \
 		../showframe/tethread/te_thread.h \
 		../showframe/buttonadd/buttonadd.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/QPen \
