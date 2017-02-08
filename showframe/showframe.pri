@@ -7,7 +7,7 @@ include(toolbutton/toolbutton.pri)
 include(configwindow/configwindow.pri)     
 include(recordthread/recordthread.pri)
 include(network/network.pri)
-#include(tethread/tethread.pri)    
+include(tethread/tethread.pri)    
 message("showframe")
 
 HEADERS +=   $$PWD/showframe.h

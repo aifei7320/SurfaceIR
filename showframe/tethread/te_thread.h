@@ -2,12 +2,9 @@
 #define TE_THREAD_H
 
 #include <QThread>
-#include "mainwindow.h"
 #include "i3system_TE.h"
 
 using namespace i3;
-
-class MainWindow;
 
 class TE_Thread : public QThread
 {
@@ -28,7 +25,7 @@ public:
     
 protected:
     bool        m_bIsStopped;
-    MainWindow *pParentWnd;
+    //MainWindow *pParentWnd;
 
 private:
     TE_A* m_pTE;

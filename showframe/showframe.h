@@ -39,7 +39,7 @@ using namespace std;
 #include "network/network.h"
 #include <QVariantAnimation>
 #include <QPropertyAnimation>
-//#include "tethread/te_thread.h"
+#include "tethread/te_thread.h"
 #include "buttonadd/buttonadd.h"
 #include "toolbutton/toolbutton.h"
 #include <QGraphicsColorizeEffect>
@@ -47,7 +47,6 @@ using namespace std;
 
 #include "i3system_TE.h"
 
-class TE_Thread;
 
 class ShowFrame :  public QLabel
 {

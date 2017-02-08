@@ -53,6 +53,7 @@ SOURCES       = ../showframe/buttonadd/buttonadd.cpp \
 		../showframe/configwindow/configwindow.cpp \
 		../showframe/recordthread/recordthread.cpp \
 		../showframe/network/network.cpp \
+		../showframe/tethread/te_thread.cpp \
 		../showframe/showframe.cpp \
 		../main.cpp \
 		../mainwindow.cpp \
@@ -62,6 +63,7 @@ SOURCES       = ../showframe/buttonadd/buttonadd.cpp \
 		moc_toolbutton.cpp \
 		moc_configwindow.cpp \
 		moc_network.cpp \
+		moc_te_thread.cpp \
 		moc_showframe.cpp \
 		moc_mainwindow.cpp \
 		moc_basicwidget.cpp \
@@ -71,6 +73,7 @@ OBJECTS       = buttonadd.o \
 		configwindow.o \
 		recordthread.o \
 		network.o \
+		te_thread.o \
 		showframe.o \
 		main.o \
 		mainwindow.o \
@@ -81,6 +84,7 @@ OBJECTS       = buttonadd.o \
 		moc_toolbutton.o \
 		moc_configwindow.o \
 		moc_network.o \
+		moc_te_thread.o \
 		moc_showframe.o \
 		moc_mainwindow.o \
 		moc_basicwidget.o \
@@ -229,6 +233,7 @@ DIST          = ../../../../Qt5.7.1/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		../../showframe/configwindow/configwindow.pri \
 		../../showframe/recordthread/recordthread.pri \
 		../../showframe/network/network.pri \
+		../../showframe/tethread/tethread.pri \
 		../../showframe/showframe.pri \
 		../../../../Qt5.7.1/5.7/gcc_64/mkspecs/features/resolve_config.prf \
 		../../../../Qt5.7.1/5.7/gcc_64/mkspecs/features/default_post.prf \
@@ -249,6 +254,7 @@ DIST          = ../../../../Qt5.7.1/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		../showframe/configwindow/configwindow.h \
 		../showframe/recordthread/recordthread.h \
 		../showframe/network/network.h \
+		../showframe/tethread/te_thread.h \
 		../showframe/showframe.h \
 		../mainwindow.h \
 		../basicwidget.h \
@@ -257,6 +263,7 @@ DIST          = ../../../../Qt5.7.1/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		../showframe/configwindow/configwindow.cpp \
 		../showframe/recordthread/recordthread.cpp \
 		../showframe/network/network.cpp \
+		../showframe/tethread/te_thread.cpp \
 		../showframe/showframe.cpp \
 		../main.cpp \
 		../mainwindow.cpp \
@@ -417,6 +424,7 @@ Makefile: ../SurfaceIR.pro ../../../Qt5.7.1/5.7/gcc_64/mkspecs/features/spec_pre
 		../showframe/configwindow/configwindow.pri \
 		../showframe/recordthread/recordthread.pri \
 		../showframe/network/network.pri \
+		../showframe/tethread/tethread.pri \
 		../showframe/showframe.pri \
 		../../../Qt5.7.1/5.7/gcc_64/mkspecs/features/resolve_config.prf \
 		../../../Qt5.7.1/5.7/gcc_64/mkspecs/features/default_post.prf \
@@ -583,6 +591,7 @@ Makefile: ../SurfaceIR.pro ../../../Qt5.7.1/5.7/gcc_64/mkspecs/features/spec_pre
 ../showframe/configwindow/configwindow.pri:
 ../showframe/recordthread/recordthread.pri:
 ../showframe/network/network.pri:
+../showframe/tethread/tethread.pri:
 ../showframe/showframe.pri:
 ../../../Qt5.7.1/5.7/gcc_64/mkspecs/features/resolve_config.prf:
 ../../../Qt5.7.1/5.7/gcc_64/mkspecs/features/default_post.prf:
@@ -619,8 +628,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../uiimages/videoui.qrc $(DISTDIR)/
-	$(COPY_FILE) --parents ../showframe/buttonadd/buttonadd.h ../showframe/toolbutton/toolbutton.h ../showframe/configwindow/configwindow.h ../showframe/recordthread/recordthread.h ../showframe/network/network.h ../showframe/showframe.h ../mainwindow.h ../basicwidget.h ../flatpixmapbutton.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../showframe/buttonadd/buttonadd.cpp ../showframe/toolbutton/toolbutton.cpp ../showframe/configwindow/configwindow.cpp ../showframe/recordthread/recordthread.cpp ../showframe/network/network.cpp ../showframe/showframe.cpp ../main.cpp ../mainwindow.cpp ../basicwidget.cpp ../flatpixmapbutton.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../showframe/buttonadd/buttonadd.h ../showframe/toolbutton/toolbutton.h ../showframe/configwindow/configwindow.h ../showframe/recordthread/recordthread.h ../showframe/network/network.h ../showframe/tethread/te_thread.h ../showframe/showframe.h ../mainwindow.h ../basicwidget.h ../flatpixmapbutton.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../showframe/buttonadd/buttonadd.cpp ../showframe/toolbutton/toolbutton.cpp ../showframe/configwindow/configwindow.cpp ../showframe/recordthread/recordthread.cpp ../showframe/network/network.cpp ../showframe/tethread/te_thread.cpp ../showframe/showframe.cpp ../main.cpp ../mainwindow.cpp ../basicwidget.cpp ../flatpixmapbutton.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -676,9 +685,9 @@ qrc_videoui.cpp: ../uiimages/videoui.qrc \
 		../uiimages/desktop/home.png
 	/home/hero/Qt5.7.1/5.7/gcc_64/bin/rcc -name videoui ../uiimages/videoui.qrc -o qrc_videoui.cpp
 
-compiler_moc_header_make_all: moc_buttonadd.cpp moc_toolbutton.cpp moc_configwindow.cpp moc_network.cpp moc_showframe.cpp moc_mainwindow.cpp moc_basicwidget.cpp moc_flatpixmapbutton.cpp
+compiler_moc_header_make_all: moc_buttonadd.cpp moc_toolbutton.cpp moc_configwindow.cpp moc_network.cpp moc_te_thread.cpp moc_showframe.cpp moc_mainwindow.cpp moc_basicwidget.cpp moc_flatpixmapbutton.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_buttonadd.cpp moc_toolbutton.cpp moc_configwindow.cpp moc_network.cpp moc_showframe.cpp moc_mainwindow.cpp moc_basicwidget.cpp moc_flatpixmapbutton.cpp
+	-$(DEL_FILE) moc_buttonadd.cpp moc_toolbutton.cpp moc_configwindow.cpp moc_network.cpp moc_te_thread.cpp moc_showframe.cpp moc_mainwindow.cpp moc_basicwidget.cpp moc_flatpixmapbutton.cpp
 moc_buttonadd.cpp: ../../../Qt5.7.1/5.7/gcc_64/include/QtGui/QPen \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/qpen.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/qcolor.h \
@@ -1123,6 +1132,59 @@ moc_network.cpp: ../../../Qt5.7.1/5.7/gcc_64/include/QtCore/QObject \
 		../../../Qt5.7.1/5.7/gcc_64/bin/moc
 	/home/hero/Qt5.7.1/5.7/gcc_64/bin/moc $(DEFINES) -I/home/hero/Qt5.7.1/5.7/gcc_64/mkspecs/linux-g++ -I/home/hero/project/SurfaceIR -I/home/hero/project/SurfaceIR -I/usr/local/include/i3system -I/usr/local/include/opencv2 -I/usr/local/include/opencv -I/usr/local/include -I/home/hero/Qt5.7.1/5.7/gcc_64/include -I/home/hero/Qt5.7.1/5.7/gcc_64/include/QtWidgets -I/home/hero/Qt5.7.1/5.7/gcc_64/include/QtGui -I/home/hero/Qt5.7.1/5.7/gcc_64/include/QtNetwork -I/home/hero/Qt5.7.1/5.7/gcc_64/include/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../showframe/network/network.h -o moc_network.cpp
 
+moc_te_thread.cpp: ../../../Qt5.7.1/5.7/gcc_64/include/QtCore/QThread \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qthread.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qobject.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qobjectdefs.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qnamespace.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qglobal.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qconfig.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qfeatures.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qsystemdetection.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qprocessordetection.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qcompilerdetection.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qtypeinfo.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qtypetraits.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qisenum.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qsysinfo.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qlogging.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qflags.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qatomic.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qbasicatomic.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qgenericatomic.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qatomic_cxx11.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qatomic_msvc.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qglobalstatic.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qmutex.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qnumeric.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qversiontagging.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qstring.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qchar.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qbytearray.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qrefcount.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qarraydata.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qstringbuilder.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qlist.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qalgorithms.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qiterator.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qhashfunctions.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qpair.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qbytearraylist.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qstringlist.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qregexp.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qstringmatcher.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qcoreevent.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qscopedpointer.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qmetatype.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qvarlengtharray.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qcontainerfwd.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qobject_impl.h \
+		../showframe/tethread/te_thread.h \
+		../../../Qt5.7.1/5.7/gcc_64/bin/moc
+	/home/hero/Qt5.7.1/5.7/gcc_64/bin/moc $(DEFINES) -I/home/hero/Qt5.7.1/5.7/gcc_64/mkspecs/linux-g++ -I/home/hero/project/SurfaceIR -I/home/hero/project/SurfaceIR -I/usr/local/include/i3system -I/usr/local/include/opencv2 -I/usr/local/include/opencv -I/usr/local/include -I/home/hero/Qt5.7.1/5.7/gcc_64/include -I/home/hero/Qt5.7.1/5.7/gcc_64/include/QtWidgets -I/home/hero/Qt5.7.1/5.7/gcc_64/include/QtGui -I/home/hero/Qt5.7.1/5.7/gcc_64/include/QtNetwork -I/home/hero/Qt5.7.1/5.7/gcc_64/include/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../showframe/tethread/te_thread.h -o moc_te_thread.cpp
+
 moc_showframe.cpp: ../../../Qt5.7.1/5.7/gcc_64/include/QtCore/QMap \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qmap.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qiterator.h \
@@ -1265,18 +1327,16 @@ moc_showframe.cpp: ../../../Qt5.7.1/5.7/gcc_64/include/QtCore/QMap \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/QPropertyAnimation \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qpropertyanimation.h \
 		../showframe/tethread/te_thread.h \
-		../mainwindow.h \
-		../../../Qt5.7.1/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.1/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.1/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/qicon.h \
-		../showframe/showframe.h \
 		../showframe/buttonadd/buttonadd.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/QPen \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/qpen.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/QPainter \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/qpainter.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/qtextoption.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtWidgets/QPushButton \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/qicon.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/QMouseEvent \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/QPainterPath \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtWidgets/QGraphicsOpacityEffect \
@@ -1447,7 +1507,6 @@ moc_mainwindow.cpp: ../../../Qt5.7.1/5.7/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/QPropertyAnimation \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qpropertyanimation.h \
 		../showframe/tethread/te_thread.h \
-		../mainwindow.h \
 		../showframe/buttonadd/buttonadd.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/QPen \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/qpen.h \
@@ -2196,6 +2255,59 @@ network.o: ../showframe/network/network.cpp ../showframe/network/network.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtNetwork/QHostAddress
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o network.o ../showframe/network/network.cpp
 
+te_thread.o: ../showframe/tethread/te_thread.cpp ../showframe/tethread/te_thread.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/QThread \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qthread.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qobject.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qobjectdefs.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qnamespace.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qglobal.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qconfig.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qfeatures.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qsystemdetection.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qprocessordetection.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qcompilerdetection.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qtypeinfo.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qtypetraits.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qisenum.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qsysinfo.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qlogging.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qflags.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qatomic.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qbasicatomic.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qgenericatomic.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qatomic_cxx11.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qatomic_msvc.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qglobalstatic.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qmutex.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qnumeric.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qversiontagging.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qstring.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qchar.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qbytearray.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qrefcount.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qarraydata.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qstringbuilder.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qlist.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qalgorithms.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qiterator.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qhashfunctions.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qpair.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qbytearraylist.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qstringlist.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qregexp.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qstringmatcher.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qcoreevent.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qscopedpointer.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qmetatype.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qvarlengtharray.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qcontainerfwd.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qobject_impl.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtCore
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o te_thread.o ../showframe/tethread/te_thread.cpp
+
 showframe.o: ../showframe/showframe.cpp ../showframe/showframe.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/QMap \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qmap.h \
@@ -2339,17 +2451,16 @@ showframe.o: ../showframe/showframe.cpp ../showframe/showframe.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/QPropertyAnimation \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtCore/qpropertyanimation.h \
 		../showframe/tethread/te_thread.h \
-		../mainwindow.h \
-		../../../Qt5.7.1/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.1/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.1/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/qicon.h \
 		../showframe/buttonadd/buttonadd.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/QPen \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/qpen.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/QPainter \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/qpainter.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/qtextoption.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtWidgets/QPushButton \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
+		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/qicon.h \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/QMouseEvent \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtGui/QPainterPath \
 		../../../Qt5.7.1/5.7/gcc_64/include/QtWidgets/QGraphicsOpacityEffect \
@@ -3001,6 +3112,9 @@ moc_configwindow.o: moc_configwindow.cpp
 
 moc_network.o: moc_network.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_network.o moc_network.cpp
+
+moc_te_thread.o: moc_te_thread.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_te_thread.o moc_te_thread.cpp
 
 moc_showframe.o: moc_showframe.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_showframe.o moc_showframe.cpp
