@@ -39,8 +39,9 @@ ShowFrame::ShowFrame(QWidget *parent) : QLabel(parent),
 
     setStyleSheet("QLabel{background-color:darkCyan}");
 
-    confSocket = new QTcpSocket(this);
-    dataSocket = new QUdpSocket(this);
+    confSocket = new QUdpSocket(this);
+    dataSocket = new QTcpSocket(this);
+    dataServer = new QTcpServer(this);
 
     frameTimer = new QTimer;
     tipTimer = new QTimer;
@@ -89,7 +90,6 @@ ShowFrame::ShowFrame(QWidget *parent) : QLabel(parent),
     connect(frameTimer, SIGNAL(timeout()), this, SLOT(displayFrame()));
     connect(psbAdd, SIGNAL(clicked()), this, SLOT(on_psbAdd_clicked()));
     connect(confSocket, SIGNAL(readyRead()), this, SLOT(readDevConf()));
-    connect(dataSocket, SIGNAL(readyRead()), this, SLOT(getImageFrame()));
     connect(colorButton, SIGNAL(clicked()), this, SLOT(on_colorButton_clicked()));
     connect(recordButton, SIGNAL(clicked()), this, SLOT(on_recordButton_clicked()));
     connect(tempChangeButton, SIGNAL(clicked()), this, SLOT(on_tempChangeButton_clicked()));
@@ -305,9 +305,14 @@ void ShowFrame::setDeviceIP(const QString IP)
     isConnected = true;
     psbAdd->setHidden(true);
     deviceIP = IP;
-    confSocket->connectToHost(QHostAddress(deviceIP), 8800);
-    connect(confSocket, SIGNAL(connected()), this, SLOT(connectionEstablish()));
-    dataSocket->bind(QHostAddress(deviceIP), 8801);
+    confSocket->bind(8800);
+
+    dataServer->listen(QHostAddress::Any, 8801);
+    connect(dataServer, SIGNAL(newConnection()), this, SLOT(connectionEstablish()));
+
+
+
+
     QPixmap pixmap(width(), height());
 #ifdef WIN32
     if (!pixmap.load(QString("d:/work/SurfaceIR/temp/%1.jpg").arg(myID)) )
@@ -457,7 +462,16 @@ void ShowFrame::on_tempChangeButton_clicked()
 
 void ShowFrame::connectionEstablish()
 {
+    dataSocket = dataServer->nextPendingConnection();
+    connect(dataSocket, SIGNAL(readyRead()), this, SLOT(getImageFrame()));
+    connect(dataSocket, SIGNAL(disconnected()), this, SLOT(connectionStoped()));
+    qDebug()<<"connection Established";
+}
 
+void ShowFrame::connectionStoped()
+{
+    disconnect(dataSocket, SIGNAL(readyRead()), this, SLOT(getImageFrame()));
+    qDebug()<<"connection Stoped";
 }
 
 void ShowFrame::delTipLabel()
@@ -528,3 +542,21 @@ inline QImage  ShowFrame::cvMatToQImage( const cv::Mat &inMat )
 
     return QImage();
 }
+
+void ShowFrame::getImageFrame()
+{
+    QByteArray image;
+    quint64 imgSize;
+    QPixmap pix;
+    QDataStream in(dataSocket);
+    in >> imgSize;
+    qDebug()<<imgSize;
+    while(dataSocket->bytesAvailable() < imgSize)
+        dataSocket->waitForReadyRead(1000);
+    image = dataSocket->readAll();
+    pix.loadFromData(image);
+    setPixmap(pix);
+    //setText(image.data());
+    qDebug()<<"set Text"<<image.size();
+}
+

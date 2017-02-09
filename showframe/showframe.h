@@ -28,6 +28,7 @@ using namespace std;
 #include "opencv.hpp"
 #include "highgui.h"
 #include <QTcpSocket>
+#include <QTcpServer>
 #include <QUdpSocket>
 #include <QMessageBox>
 #include <QHBoxLayout>
@@ -109,8 +110,9 @@ private:
     QLabel *tipLabel;//tip
     TE_Thread *m_pThrd;
 
-    QTcpSocket *confSocket;
-    QUdpSocket *dataSocket;
+    QTcpServer *dataServer;
+    QUdpSocket *confSocket;
+    QTcpSocket *dataSocket;
     
     bool m_bFullScr;
 
@@ -136,8 +138,10 @@ private slots:
     void on_psbAdd_clicked();//添加设备按钮
     void setDeviceIP(const QString);
     void connectionEstablish();
+    void connectionStoped();
     void displayFrame();
     void delTipLabel();
+    void getImageFrame();
     void showImage(ushort *pRecvImage, float *_pTemp, float _centerTemp, ushort _width, ushort _height);
 };
 

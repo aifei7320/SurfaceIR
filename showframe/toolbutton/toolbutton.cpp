@@ -82,5 +82,6 @@ void ToolButton::paintEvent(QPaintEvent *e)
     painter.drawEllipse(0, 0, width(), height());
     painter.restore();
     pen.setColor(Qt::black);
+    painter.setFont(QFont("AR PL UKai CN"));
     painter.drawText(QRect(0, 0, width(), height()), Qt::AlignCenter, text());
 }
