@@ -53,11 +53,11 @@ ShowFrame::ShowFrame(QWidget *parent) : QLabel(parent),
     setScaledContents(true);
     setMouseTracking(true);
 
-    colorButton = new ToolButton;
+    colorButton = new ToolButton(this);
     colorButton->setMaximumWidth(200);
-    colorButton->setText(QString::fromUtf8("设置色彩"));
+    colorButton->setText(QString::fromUtf8("设置"));
 
-    sourceChangeButton = new ToolButton;
+    sourceChangeButton = new ToolButton(this);
     sourceChangeButton->setMaximumWidth(200);
     sourceChangeButton->setText(QString::fromUtf8("切换视频源"));
 
@@ -65,15 +65,15 @@ ShowFrame::ShowFrame(QWidget *parent) : QLabel(parent),
     recordButton->setMaximumWidth(200);
     recordButton->setText(QString::fromUtf8("录像"));
 
-    tempChangeButton = new  ToolButton;
+    tempChangeButton = new  ToolButton(this);
     tempChangeButton->setMaximumWidth(200);
     tempChangeButton->setText(QString::fromUtf8("温度转换"));
 
-    saveButton = new ToolButton;
+    saveButton = new ToolButton(this);
     saveButton->setMaximumWidth(200);
     saveButton->setText(QString::fromUtf8("保存图片"));
 
-    playAndStopButton = new ToolButton;
+    playAndStopButton = new ToolButton(this);
     playAndStopButton->setMaximumWidth(200);
     playAndStopButton->setText(QString::fromUtf8("开始"));
 
@@ -98,6 +98,18 @@ ShowFrame::ShowFrame(QWidget *parent) : QLabel(parent),
 
     setFrameShape(QFrame::Panel);
     setLayout(mainLayout);
+}
+
+ShowFrame::~ShowFrame()
+{
+    cout<<"ShowFrame destructor"<<endl;
+    delete psbAdd;
+    delete playAndStopButton;
+    delete colorButton;
+    delete recordButton;
+    delete saveButton;
+    delete tempChangeButton;
+    delete sourceChangeButton;
 }
 
 void ShowFrame::setID(const quint8 id)
@@ -157,7 +169,6 @@ void ShowFrame::mousePressEvent(QMouseEvent *e)
             startPoint = e->pos();
             qDebug()<<"press point"<<startPoint;
         }
-
     }
 }
 
@@ -169,16 +180,31 @@ bool ShowFrame::event(QEvent *e)
         int h = height();
         int w = width();
 
-        int imgx = currentPoint.x() * mymat.cols / w;
-        int imgy = currentPoint.y() * mymat.rows / h;
+        QImage img = pixmap()->toImage();
 
-        quint8 b = mymat.at<cv::Vec3b>(imgx, imgy)[0];
-        quint8 g = mymat.at<cv::Vec3b>(imgx, imgy)[1];
-        quint8 r = mymat.at<cv::Vec3b>(imgx, imgy)[2];
+        int imgx = currentPoint.x() * img.size().width() / w;
+        int imgy = currentPoint.y() * img.size().height() / h;
+
+        QRgb rgb = img.pixel(imgx, imgy);
+
+            quint8 b = qBlue(rgb);
+            quint8 g = qGreen(rgb);
+            quint8 r = qRed(rgb);
 
         QHoverEvent *hoverEvent = static_cast<QHoverEvent*>(e);
         qDebug()<<"event point"<<hoverEvent->pos();
-        tipLabel->move(mapToGlobal(hoverEvent->pos() += QPoint(15, 0) ));//直接在鼠标下显示不行，鼠标不能遮挡label
+        if( (geometry().width() - hoverEvent->pos().x()) <= 100 && m_bFullScr){
+            tipLabel->move(mapToGlobal(hoverEvent->pos() -= QPoint(80, 0) ));//直接在鼠标下显示不行，鼠标不能遮挡label
+        } else {
+            tipLabel->move(mapToGlobal(hoverEvent->pos() += QPoint(15, 0) ));//直接在鼠标下显示不行，鼠标不能遮挡label
+
+        }
+        if( (geometry().height() - hoverEvent->pos().y()) <= 100 && m_bFullScr){
+            tipLabel->move(mapToGlobal(hoverEvent->pos() -= QPoint(-5, 60) ));//直接在鼠标下显示不行，鼠标不能遮挡label
+        } else {
+            tipLabel->move(mapToGlobal(hoverEvent->pos() += QPoint(15, 0) ));//直接在鼠标下显示不行，鼠标不能遮挡label
+        }
+
         tipLabel->setText(QString("r:\t") + QString::number(r) + "\n" +QString("g:\t") + QString::number(g) + "\n" + QString("b:\t") + QString::number(b) );
         //模拟刷新显示
         tipLabel->hide();
@@ -294,7 +320,7 @@ void ShowFrame::on_playAndStopButton_clicked()
 
 void ShowFrame::on_psbAdd_clicked()
 {
-    ConfigWindow *cw = new ConfigWindow;
+    ConnectionConfigWindow *cw = new ConnectionConfigWindow;
     SetColorTable();
     connect(cw, SIGNAL(Conform(QString)), this, SLOT(setDeviceIP(const QString)));
     cw->exec();
@@ -305,9 +331,9 @@ void ShowFrame::setDeviceIP(const QString IP)
     isConnected = true;
     psbAdd->setHidden(true);
     deviceIP = IP;
-    confSocket->bind(8800);
+    confSocket->bind(7320);
 
-    dataServer->listen(QHostAddress::Any, 8801);
+    dataServer->listen(QHostAddress(IP), 7320 + myID);
     connect(dataServer, SIGNAL(newConnection()), this, SLOT(connectionEstablish()));
 
 
@@ -439,7 +465,13 @@ void ShowFrame::displayFrame()
 
 void ShowFrame::on_colorButton_clicked()
 {
-
+    cc = new CamConfig;
+    cc->setObjectName("cc");
+    cc->setStyleSheet("QTabWidget#cc{ background-color:darkcyan}");
+    cc->resize(200, 400);
+    cc->move(mapToGlobal(QPoint(10, 10)));
+    cc->show();
+    qDebug()<<"asdkfja;";
 }
 
 void ShowFrame::on_recordButton_clicked()

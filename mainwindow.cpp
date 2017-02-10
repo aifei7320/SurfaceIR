@@ -61,6 +61,13 @@ void MainWindow::resizeEvent(QResizeEvent *e)
     
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *e)
+{
+    if (e->modifiers() == Qt::ControlModifier && e->key() == Qt::Key_Q)
+        qApp->exit(0);
+    QWidget::keyPressEvent(e);
+}
+
 void MainWindow::on_sfLeftTop_clicked()
 {
 }

@@ -1,5 +1,5 @@
 /*************************************************************************
-    > File Name: showframe/configwindow/configwindow.cpp
+    > File Name: showframe/connectionConnectionConfigWindow/connectionconfigwindow.cpp
     > Author: zxf
     > Mail: zhengxiaofeng333@163.com 
     > Created Time: 2017年01月20日 星期五 17时35分53秒
@@ -9,8 +9,8 @@
 #include <unistd.h>
 using namespace std;
 
-#include "configwindow.h"
-ConfigWindow::ConfigWindow(QWidget *parent) : QDialog(parent)
+#include "connectionconfigwindow.h"
+ConnectionConfigWindow::ConnectionConfigWindow(QWidget *parent) : QDialog(parent)
 {
     deviceIPLabel = new QLabel;
     deviceIPLabel->setText(QString::fromUtf8("设备IP:"));
@@ -34,7 +34,7 @@ ConfigWindow::ConfigWindow(QWidget *parent) : QDialog(parent)
     setLayout(vblMain);
 }
 
-void ConfigWindow::on_phbConform_clicked()
+void ConnectionConfigWindow::on_phbConform_clicked()
 {
     emit Conform(leDeviceIP->text());
     deleteLater();

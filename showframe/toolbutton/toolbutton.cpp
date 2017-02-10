@@ -22,51 +22,66 @@ ToolButton::ToolButton(QWidget *parent) : QPushButton(parent)
 
 void ToolButton::enterEvent(QEvent *e)
 {
-    QGraphicsOpacityEffect *eff = new QGraphicsOpacityEffect(this);
-    setGraphicsEffect(eff);
-    QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
-    a->setDuration(100);
-    a->setStartValue(0);
-    a->setEndValue(0.5);
-    a->setEasingCurve(QEasingCurve::InBack);
-    a->start();
-
+    QWidget *p = static_cast<QWidget*>(parent());
+    if(!p->isMaximized()){
+        QGraphicsOpacityEffect *eff = new QGraphicsOpacityEffect(this);
+        setGraphicsEffect(eff);
+        QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
+        a->setDuration(100);
+        a->setStartValue(0);
+        a->setEndValue(0.5);
+        a->setEasingCurve(QEasingCurve::InBack);
+        a->start();
+        QPushButton::enterEvent(e);
+    }
 }
 
 void ToolButton::leaveEvent(QEvent *e)
 {
-    QGraphicsOpacityEffect *eff = new QGraphicsOpacityEffect(this);
-    setGraphicsEffect(eff);
-    QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
-    a->setDuration(5000);
-    a->setStartValue(0.5);
-    a->setEndValue(0);
-    a->setEasingCurve(QEasingCurve::InBack);
-    a->start();
+    QWidget *p = static_cast<QWidget*>(parent());
+    if(!p->isMaximized()){
+        QGraphicsOpacityEffect *eff = new QGraphicsOpacityEffect(this);
+        setGraphicsEffect(eff);
+        QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
+        a->setDuration(5000);
+        a->setStartValue(0.5);
+        a->setEndValue(0);
+        a->setEasingCurve(QEasingCurve::InBack);
+        a->start();
+        QPushButton::leaveEvent(e);
+    }
 }
 
-void ToolButton::mouseReleaseEvent(QEvent *e)
+void ToolButton::mouseReleaseEvent(QMouseEvent *e)
 {
-    QGraphicsOpacityEffect *eff = new QGraphicsOpacityEffect(this);
-    setGraphicsEffect(eff);
-    QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
-    a->setDuration(100);
-    a->setStartValue(1);
-    a->setEndValue(0.5);
-    a->setEasingCurve(QEasingCurve::InBack);
-    a->start();
+    QWidget *p = static_cast<QWidget*>(parent());
+    if(!p->isMaximized()){
+        QGraphicsOpacityEffect *eff = new QGraphicsOpacityEffect(this);
+        setGraphicsEffect(eff);
+        QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
+        a->setDuration(100);
+        a->setStartValue(1);
+        a->setEndValue(0.5);
+        a->setEasingCurve(QEasingCurve::InBack);
+        a->start();
+        QPushButton::mouseReleaseEvent(e);
+    }
 }
 
 void ToolButton::mousePressEvent(QMouseEvent *e)
 {
-    QGraphicsOpacityEffect *eff = new QGraphicsOpacityEffect(this);
-    setGraphicsEffect(eff);
-    QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
-    a->setDuration(100);
-    a->setStartValue(0.5);
-    a->setEndValue(1);
-    a->setEasingCurve(QEasingCurve::InBack);
-    a->start();
+    QWidget *p = static_cast<QWidget*>(parent());
+    if(!p->isMaximized()){
+        QGraphicsOpacityEffect *eff = new QGraphicsOpacityEffect(this);
+        setGraphicsEffect(eff);
+        QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
+        a->setDuration(100);
+        a->setStartValue(0.5);
+        a->setEndValue(1);
+        a->setEasingCurve(QEasingCurve::InBack);
+        a->start();
+        QPushButton::mousePressEvent(e);
+    }
 }
 
 

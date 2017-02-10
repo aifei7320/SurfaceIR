@@ -5,11 +5,12 @@
     > Created Time: 2017年01月20日 星期五 17时36分00秒
  ************************************************************************/
 
+
+#ifndef _CONNECTIONCONFIGWINDOW_H_
+#define _CONNECTIONCONFIGWINDOW_H_
+
 #include <iostream>
 #include <unistd.h>
-
-#ifndef _CONFIGWINDOW_H_
-#define _CONFIGWINDOW_H_
 
 #include <QLabel>
 #include <QRegExp>
@@ -20,11 +21,11 @@
 #include <QPushButton>
 #include <QRegExpValidator>
 
-class ConfigWindow : public QDialog
+class ConnectionConfigWindow : public QDialog
 {
     Q_OBJECT
 public:
-    ConfigWindow(QWidget *parent = 0);
+    ConnectionConfigWindow(QWidget *parent = 0);
 signals:
     void Conform(QString);
 

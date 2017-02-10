@@ -45,10 +45,11 @@ using namespace std;
 #include "tethread/colormap.h"
 #include "tethread/te_thread.h"
 #include "buttonadd/buttonadd.h"
+#include "camconfig/camconfig.h"
 #include "toolbutton/toolbutton.h"
 #include <QGraphicsColorizeEffect>
-#include "configwindow/configwindow.h"
 #include "opencv2/imgproc/imgproc.hpp"
+#include "connectionconfigwindow/connectionconfigwindow.h"
 
 #include "i3system_TE.h"
 
@@ -58,6 +59,7 @@ class ShowFrame :  public QLabel
     Q_OBJECT
 public:
     ShowFrame(QWidget *parent=0);
+    ~ShowFrame();
     void setID(const quint8 id);
 protected:
     bool event(QEvent *e);
@@ -99,6 +101,8 @@ private:
     QColor frameColor;
     QTimer *frameTimer;//定义边框闪烁
     QTimer *tipTimer;
+
+    CamConfig *cc;
 
     ToolButton *recordButton;
     ToolButton *colorButton;

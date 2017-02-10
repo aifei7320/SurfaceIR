@@ -12,10 +12,11 @@ using namespace std;
 #ifndef _MAINWINDOW_H_
 #define _MAINWINDOW_H_
 
+#include <QLabel>
 #include <QWidget>
+#include <QKeyEvent>
 #include <QPushButton>
 #include <QGridLayout>
-#include <QLabel>
 #include <QResizeEvent>
 #include "showframe/showframe.h"
 
@@ -28,6 +29,7 @@ public:
 
 protected:
     void resizeEvent(QResizeEvent *e);
+    void keyPressEvent(QKeyEvent *e);
     
 private:
     ShowFrame *sfLeftTop;
