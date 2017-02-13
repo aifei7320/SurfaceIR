@@ -112,6 +112,7 @@ private:
     ToolButton *playAndStopButton;
 
     QLabel *tipLabel;//tip
+    bool showTipLabel;
     quint16 *tempImage;
     TE_Thread *m_pThrd;
 

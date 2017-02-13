@@ -15,9 +15,9 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent),
     change(false)
 {
     mainLayout = new QGridLayout;
-    mainLayout->setMargin(2);
+    //mainLayout->setMargin(2);
     mainLayout->setContentsMargins(2, 2, 2, 2);
-    mainLayout->setSpacing(2);
+    //mainLayout->setSpacing(2);
     
     sfLeftTop = new ShowFrame;
     sfLeftBottom = new ShowFrame;
@@ -43,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent),
 
     setLayout(mainLayout);
 
-    setWindowFlags(Qt::FramelessWindowHint);
+    //setWindowFlags(Qt::FramelessWindowHint);
 }
 
 void MainWindow::resizeEvent(QResizeEvent *e)
@@ -56,15 +56,32 @@ void MainWindow::resizeEvent(QResizeEvent *e)
         sfRightBottom->setMinimumSize(width() / 2, height() / 2);
         change = true;
     }
-    else 
+    else
         change = false;
-    
+    qDebug()<< "resize event"; 
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *e)
 {
     if (e->modifiers() == Qt::ControlModifier && e->key() == Qt::Key_Q)
         qApp->exit(0);
+    if (e->modifiers() == Qt::ControlModifier && e->key() == Qt::Key_F){
+        if(isMaximized()){
+            change = true;
+            sfLeftTop->setMinimumSize(1022 / 2, 766 / 2);
+            sfLeftBottom->setMinimumSize(1022 / 2, 766 / 2);
+            sfRightTop->setMinimumSize(1022 / 2, 766 / 2);
+            sfRightBottom->setMinimumSize(1022 / 2, 766 / 2);
+            showNormal();
+            setFixedSize(1024, 768);
+            qDebug()<<size();
+        }
+        else{
+            change = false;
+            setFixedSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+            showMaximized();
+        }
+    }
     QWidget::keyPressEvent(e);
 }
 

@@ -37,7 +37,7 @@ enum CbColorMapIndex{
 ShowFrame::ShowFrame(QWidget *parent) : QLabel(parent),
     isConnected(false), moving(false), isRecording(false),
     flash(false), m_iColorMap(I3ColorMap::Rainbow), m_bAGC(true),
-    isplaying(false)
+    isplaying(false), showTipLabel(false)
 {
 
     setStyleSheet("QLabel{background-color:darkCyan}");
@@ -230,9 +230,10 @@ void ShowFrame::mouseReleaseEvent(QMouseEvent *e)
                 update();
             }
             currentPoint = e->pos();
-            if (!moving)//画框时不显示对应点温度
-                QCoreApplication::postEvent(this, new QHoverEvent(QEvent::HoverEnter, currentPoint, startPoint));
-            if (tipTimer->isActive())//如果两次点击，就刷新定时器，重新计时2秒
+            showTipLabel = true;
+            //if (!moving)//画框时不显示对应点温度
+            //    QCoreApplication::postEvent(this, new QHoverEvent(QEvent::HoverEnter, currentPoint, startPoint));
+            if (tipTimer->isActive())//如果当前tip小时前再次点击，就刷新定时器，重新计时2秒
                 tipTimer->stop();
             tipTimer->start(2000);
             moving = false;
@@ -360,6 +361,10 @@ void ShowFrame::setDeviceIP(const QString IP)
 void ShowFrame::showImage(ushort *pRecvImage, float *_pTemp, float _centerTemp, ushort _width, ushort _height)
 {
     Q_UNUSED(_centerTemp);
+    if (showTipLabel){
+
+        showTipLabel = false;
+    }
     cv::Mat matAIE(_height, _width, CV_8UC1);
     cv::Mat mat16(_height, _width, CV_16U, pRecvImage), mat8UC1, mat8ColorMap, matOut;
     if(!m_bAGC)
