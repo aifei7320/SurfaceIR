@@ -112,6 +112,7 @@ private:
     ToolButton *playAndStopButton;
 
     QLabel *tipLabel;//tip
+    qreal currentPointTemperature;
     bool showTipLabel;
     quint16 *tempImage;
     TE_Thread *m_pThrd;

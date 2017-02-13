@@ -210,7 +210,7 @@ bool ShowFrame::event(QEvent *e)
             tipLabel->move(mapToGlobal(hoverEvent->pos() += QPoint(15, 0) ));//直接在鼠标下显示不行，鼠标不能遮挡label
         }
 
-        tipLabel->setText(QString("r:\t") + QString::number(r) + "\n" +QString("g:\t") + QString::number(g) + "\n" + QString("b:\t") + QString::number(b) );
+        tipLabel->setText(QString("temp:\t") + QString::number(currentPointTemperature) + "\n" + QString("r:\t") + QString::number(r) + "\n" +QString("g:\t") + QString::number(g) + "\n" + QString("b:\t") + QString::number(b) );
         //模拟刷新显示
         tipLabel->hide();
         tipLabel->show();
@@ -362,8 +362,13 @@ void ShowFrame::showImage(ushort *pRecvImage, float *_pTemp, float _centerTemp, 
 {
     Q_UNUSED(_centerTemp);
     if (showTipLabel){
-
         showTipLabel = false;
+        int x, y;
+        x = currentPoint.x() * _width / width();
+        y = currentPoint.y() * _height / height();
+        currentPointTemperature = (pRecvImage[_width * (y - 1) + x] - 5000) / 1000.0; 
+        QCoreApplication::postEvent(this, new QHoverEvent(QEvent::HoverEnter, currentPoint, startPoint));
+        qDebug() <<"x:"<< x<<"y:"<< y<<"temperature"<< currentPointTemperature;
     }
     cv::Mat matAIE(_height, _width, CV_8UC1);
     cv::Mat mat16(_height, _width, CV_16U, pRecvImage), mat8UC1, mat8ColorMap, matOut;
