@@ -21,9 +21,11 @@
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QRadioButton>
+#include "i3system_TE.h"
 #include <QIntValidator>
 #include <QDoubleValidator>
 #include <QRegExpValidator>
+#include "i3system_imgproc.h"
 
 class IRCamConfig : public QLabel
 {
@@ -31,6 +33,11 @@ class IRCamConfig : public QLabel
 public:
     IRCamConfig(QWidget *parent=0);
     ~IRCamConfig();
+
+signals:
+    void conformChanges(double &aie, double &contrast, int &brightness, int &colorMap);
+    void colorMapIndex(const int);
+
 private:
     QSlider *brightnessSlider;
     QSlider *contrastSlider;
@@ -54,7 +61,29 @@ private:
 
     QVBoxLayout *mainLayout;
 
-    enum color{BLACKHOT=0, BLUERED, IRON, MEDICAL, PURPLE, PURPLEYELLOW, DARKBLUE, CYAN, RAINBOW};
+    enum{
+    WhiteHot = 0,
+    BlackHot,
+    Iron,
+    BlueRed,
+    Medical,
+    Purple,
+    PurpleYellow,
+    DarkBlue,
+    Cyan,
+    Rainbow,
+    Autumn,
+    Bone,
+    Jet,
+    Winter,
+    Ocean,
+    Summer,
+    Spring,
+    Cool,
+    HSV,
+    Hot,
+    };
+
 private slots:
     void updateBrightnessEdit(int);
     void updateContrastEdit(int);
@@ -63,6 +92,9 @@ private slots:
     void updateBrightnessSlider(QString);
     void updateContrastSlider(QString);
     void updateAIESlider(QString);
+
+    void on_conformButton_clicked();
+    void on_colorMapButton_clicked();
 };
 
 #endif

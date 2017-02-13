@@ -23,17 +23,20 @@ extern Mat				m_lutRainbow;
 
 enum CbColorMapIndex{
     WHITE_HOT = 0,
-    BLACK_HOT,
     IRON,
+    BLUERED,
+    MEDICAL,
     PURPLE,
     PURPLE_YELLOW,
-    RAINBOW,
+    DARKBLUE,
+    CYAN,
+    RAINBOW
 };
 
 
 ShowFrame::ShowFrame(QWidget *parent) : QLabel(parent),
     isConnected(false), moving(false), isRecording(false),
-    flash(false), m_iColorMap(I3ColorMap::Iron), m_bAGC(true),
+    flash(false), m_iColorMap(I3ColorMap::Rainbow), m_bAGC(true),
     isplaying(false)
 {
 
@@ -125,11 +128,13 @@ void ShowFrame::initToolButton()
 
 void ShowFrame::resizeEvent(QResizeEvent *e)
 {
-
+    Q_UNUSED(e)
+    QLabel::resizeEvent(e);
 }
 
 void ShowFrame::enterEvent(QEvent *e)
 {
+    Q_UNUSED(e)
     if (isConnected){
         tipLabel = new QLabel;
         qDebug()<<"new QLabel";
@@ -140,7 +145,7 @@ void ShowFrame::enterEvent(QEvent *e)
 
 void ShowFrame::leaveEvent(QEvent *e)
 {
-
+    Q_UNUSED(e)
     if (isConnected){
         qDebug()<<"del QLabel";
         disconnect(tipTimer, SIGNAL(timeout()), this, SLOT(delTipLabel()));
@@ -227,7 +232,7 @@ void ShowFrame::mouseReleaseEvent(QMouseEvent *e)
             currentPoint = e->pos();
             if (!moving)//画框时不显示对应点温度
                 QCoreApplication::postEvent(this, new QHoverEvent(QEvent::HoverEnter, currentPoint, startPoint));
-            if (tipTimer->isActive())//如果两次点击
+            if (tipTimer->isActive())//如果两次点击，就刷新定时器，重新计时2秒
                 tipTimer->stop();
             tipTimer->start(2000);
             moving = false;
@@ -275,14 +280,15 @@ void ShowFrame::mouseDoubleClickEvent(QMouseEvent *e)
                 m_bFullScr = true;
             }
         }
-        
+       if(tipLabel != NULL) 
+           tipLabel->deleteLater();
     }
 
 }
 
 void ShowFrame::display(QImage &image)
 {
-
+    Q_UNUSED(image)
 }
 
 void ShowFrame::on_playAndStopButton_clicked()
@@ -353,6 +359,7 @@ void ShowFrame::setDeviceIP(const QString IP)
 
 void ShowFrame::showImage(ushort *pRecvImage, float *_pTemp, float _centerTemp, ushort _width, ushort _height)
 {
+    Q_UNUSED(_centerTemp);
     cv::Mat matAIE(_height, _width, CV_8UC1);
     cv::Mat mat16(_height, _width, CV_16U, pRecvImage), mat8UC1, mat8ColorMap, matOut;
     if(!m_bAGC)
@@ -392,10 +399,26 @@ void ShowFrame::showImage(ushort *pRecvImage, float *_pTemp, float _centerTemp, 
                                   LUT(mat8UC3, m_lutIron, mat8ColorMap);
                                   break;
                               }
+        case I3ColorMap::DarkBlue:{
+                                  LUT(mat8UC3, m_lutDarkBlue, mat8ColorMap);
+                                  break;
+                              }
+        case I3ColorMap::BlueRed:{
+                                  LUT(mat8UC3, m_lutBlueRed, mat8ColorMap);
+                                  break;
+                              }
         case I3ColorMap::Purple:{
                                     LUT(mat8UC3, m_lutPurple, mat8ColorMap);
                                     break;
                                 }
+        case I3ColorMap::Cyan:{
+                                          LUT(mat8UC3, m_lutCyan, mat8ColorMap);
+                                          break;
+                                      }
+        case I3ColorMap::Medical:{
+                                          LUT(mat8UC3, m_lutMedical, mat8ColorMap);
+                                          break;
+                                      }
         case I3ColorMap::PurpleYellow:{
                                           LUT(mat8UC3, m_lutPurpleYellow, mat8ColorMap);
                                           break;
@@ -470,8 +493,16 @@ void ShowFrame::on_colorButton_clicked()
     cc->setStyleSheet("QTabWidget#cc{ background-color:darkcyan}");
     cc->resize(200, 400);
     cc->move(mapToGlobal(QPoint(10, 10)));
+    connect(cc, SIGNAL(colorMapIndex(const int)), this, SLOT(colorMapChange(const int)));
     cc->show();
     qDebug()<<"asdkfja;";
+}
+
+void ShowFrame::colorMapChange(const int index)
+{
+    m_iColorMap = index;
+    SetColorTable();
+    qDebug()<<index;
 }
 
 void ShowFrame::on_recordButton_clicked()
@@ -578,7 +609,7 @@ inline QImage  ShowFrame::cvMatToQImage( const cv::Mat &inMat )
 void ShowFrame::getImageFrame()
 {
     QByteArray image;
-    quint64 imgSize;
+    qint64 imgSize;
     QPixmap pix;
     QDataStream in(dataSocket);
     in >> imgSize;

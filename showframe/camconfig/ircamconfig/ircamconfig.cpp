@@ -69,11 +69,27 @@ IRCamConfig::IRCamConfig(QWidget *parent) : QLabel(parent)
     colorGroupBox = new QGroupBox(QString::fromUtf8("颜色映射"));
     QGridLayout *colorGridLayout = new QGridLayout;
 
+    QList<QString> list;
+    list.append("blackwhite");
+    list.append("iron");
+    list.append("blue");
+    list.append("darkgreen");
+    list.append("pink");
+    list.append("brown");
+    list.append("purple");
+    list.append("cyan");
+    list.append("yellow");
     for (int i = 0; i < 9; ++i){
         buttonList.append(new QPushButton);
         colorGridLayout->addWidget(buttonList[i], i / 3, i % 3);
-        buttonList[i]->setMinimumSize(50, 50);
+        buttonList[i]->setFixedSize(50, 50);
+        buttonList[i]->setIcon(QIcon(QPixmap(QString(":/colorMap/%1.png").arg(list.at(i)))));
+        buttonList[i]->setIconSize(QSize(45, 45));
+        buttonList[i]->setObjectName(QString("colorMap%1").arg(i));
+        connect(buttonList[i], SIGNAL(clicked()), this, SLOT(on_colorMapButton_clicked()));
     }
+
+
     colorGroupBox->setLayout(colorGridLayout);
 
     conformButton = new QPushButton(QString::fromUtf8("确认设置"));
@@ -95,6 +111,8 @@ IRCamConfig::IRCamConfig(QWidget *parent) : QLabel(parent)
     connect(brightnessEdit, SIGNAL(textChanged(QString)), this, SLOT(updateBrightnessSlider(QString)));
     connect(contrastEdit, SIGNAL(textChanged(QString)), this, SLOT(updateContrastSlider(QString)));
     connect(aieEdit, SIGNAL(textChanged(QString)), this, SLOT(updateAIESlider(QString)));
+
+    connect(conformButton, SIGNAL(clicked()), this, SLOT(on_conformButton_clicked()));
     
     setStyleSheet("QPushButton#conformButton{ background-color:darkcyan}");
     setLayout(mainLayout);
@@ -152,5 +170,74 @@ void IRCamConfig::updateBrightnessSlider(QString string)
 void IRCamConfig::updateContrastSlider(QString string)
 {
     contrastSlider->setValue(string.toDouble() * 100);
+}
+
+void IRCamConfig::on_conformButton_clicked()
+{
+
+}
+
+void IRCamConfig::on_colorMapButton_clicked()
+{
+    QPushButton *temp = static_cast<QPushButton*>(sender());
+    int index;
+    index = temp->objectName().right(1).toInt();
+    switch (index)
+    {
+        case 0:{
+                    emit colorMapIndex(WhiteHot);
+                    qDebug()<<temp->objectName(); 
+                    break;
+               }
+        case 1:{
+
+                    emit colorMapIndex(Iron);
+                    qDebug()<<temp->objectName(); 
+                    break;
+               }
+        case 2:{
+
+                    emit colorMapIndex(BlueRed);
+                    qDebug()<<temp->objectName(); 
+                    break;
+               }
+        case 3:{
+
+                    emit colorMapIndex(Medical);
+                    qDebug()<<temp->objectName(); 
+                    break;
+               }
+        case 4:{
+
+                    emit colorMapIndex(Purple);
+                    qDebug()<<temp->objectName(); 
+                    break;
+               }
+        case 5:{
+
+                    emit colorMapIndex(PurpleYellow);
+                    qDebug()<<temp->objectName(); 
+                    break;
+               }
+        case 6:{
+
+                    emit colorMapIndex(DarkBlue);
+                    qDebug()<<temp->objectName(); 
+                    break;
+               }
+        case 7:{
+
+                    emit colorMapIndex(Cyan);
+                    qDebug()<<temp->objectName(); 
+                    break;
+               }
+        case 8:{
+
+                    emit colorMapIndex(Rainbow);
+                    qDebug()<<temp->objectName(); 
+                    break;
+               }
+        default:break;
+    }
 }
 

@@ -25,5 +25,14 @@
         <file>desktop/disconnect.png</file>
         <file>desktop/set.png</file>
         <file>desktop/shelly.ico</file>
+        <file>colorMap/blackwhite.png</file>
+        <file>colorMap/purple.png</file>
+        <file>colorMap/pink.png</file>
+        <file>colorMap/yellow.png</file>
+        <file>colorMap/brown.png</file>
+        <file>colorMap/iron.png</file>
+        <file>colorMap/darkgreen.png</file>
+        <file>colorMap/blue.png</file>
+        <file>colorMap/cyan.png</file>
     </qresource>
 </RCC>

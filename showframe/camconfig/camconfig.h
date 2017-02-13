@@ -15,9 +15,12 @@
 
 class CamConfig : public QTabWidget
 {
+    Q_OBJECT
 public:
     explicit CamConfig(QWidget *parent=0);
     ~CamConfig();
+signals:
+    void colorMapIndex(const int);
 private:
     IRCamConfig *ircam;
     NormalCamConfig *norcam;

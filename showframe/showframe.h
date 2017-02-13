@@ -112,6 +112,7 @@ private:
     ToolButton *playAndStopButton;
 
     QLabel *tipLabel;//tip
+    quint16 *tempImage;
     TE_Thread *m_pThrd;
 
     QTcpServer *dataServer;
@@ -131,6 +132,28 @@ private:
     int m_iBrightness;
     ushort m_iAIERange;
     bool isplaying;
+    enum{
+        WhiteHot = 0,
+        BlackHot,
+        Iron,
+        BlueRed,
+        Medical,
+        Purple,
+        PurpleYellow,
+        DarkBlue,
+        Cyan,
+        Rainbow,
+        Autumn,
+        Bone,
+        Jet,
+        Winter,
+        Ocean,
+        Summer,
+        Spring,
+        Cool,
+        HSV,
+        Hot,
+    };
 
 private slots:
     void on_recordButton_clicked();
@@ -146,6 +169,7 @@ private slots:
     void displayFrame();
     void delTipLabel();
     void getImageFrame();
+    void colorMapChange(const int index);
     void showImage(ushort *pRecvImage, float *_pTemp, float _centerTemp, ushort _width, ushort _height);
 };
 
