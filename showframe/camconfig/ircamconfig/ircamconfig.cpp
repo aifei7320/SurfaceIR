@@ -10,7 +10,8 @@
 #include "ircamconfig.h"
 using namespace std;
 
-IRCamConfig::IRCamConfig(QWidget *parent) : QLabel(parent)
+IRCamConfig::IRCamConfig(QWidget *parent) : QLabel(parent), 
+    currentBrightness(0), currentContrast(0.00), currentAIE(1.00)
 {
 
     QHBoxLayout *contrastLayout = new QHBoxLayout;
@@ -68,6 +69,9 @@ IRCamConfig::IRCamConfig(QWidget *parent) : QLabel(parent)
 
     colorGroupBox = new QGroupBox(QString::fromUtf8("颜色映射"));
     QGridLayout *colorGridLayout = new QGridLayout;
+    colorGridLayout->setContentsMargins(2, 0, 2, 0);
+    colorGridLayout->setMargin(2);
+    colorGridLayout->setSpacing(2);
 
     QList<QString> list;
     list.append("blackwhite");
@@ -103,6 +107,7 @@ IRCamConfig::IRCamConfig(QWidget *parent) : QLabel(parent)
     mainLayout->addLayout(contrastLayout);
     mainLayout->addLayout(aieLayout);
     mainLayout->addWidget(conformButton);
+    mainLayout->setMargin(2);
 
     connect(brightnessSlider, SIGNAL(valueChanged(int)), this, SLOT(updateBrightnessEdit(int)));
     connect(contrastSlider, SIGNAL(valueChanged(int)), this, SLOT(updateContrastEdit(int)));
@@ -142,34 +147,46 @@ IRCamConfig::~IRCamConfig()
 
 void IRCamConfig::updateBrightnessEdit(int value)
 {
+    currentBrightness = value;
     brightnessEdit->setText(QString::number(value));
+    emit configChanged(currentColorMap, currentBrightness, currentContrast, currentAIE);
 }
 
 void IRCamConfig::updateContrastEdit(int value)
 {
+    currentContrast = (float) value / 100.0;
     contrastEdit->setText(QString::number(value / 100.0, 'g', 3));
+    emit configChanged(currentColorMap, currentBrightness, currentContrast, currentAIE);
 }
 
 
 void IRCamConfig::updateAIEEdit(int value)
 {
+    currentAIE = (float) value / 100.0;
     aieEdit->setText(QString::number(value / 100.0, 'g', 3));
+    emit configChanged(currentColorMap, currentBrightness, currentContrast, currentAIE);
 }
 
 
 void IRCamConfig::updateAIESlider(QString string)
 {
     aieSlider->setValue(string.toDouble() * 100);
+    currentAIE = string.toFloat();
+    emit configChanged(currentColorMap, currentBrightness, currentContrast, currentAIE);
 }
 
 void IRCamConfig::updateBrightnessSlider(QString string)
 {
     brightnessSlider->setValue(string.toInt() );
+    currentBrightness = string.toInt();
+    emit configChanged(currentColorMap, currentBrightness, currentContrast, currentAIE);
 }
 
 void IRCamConfig::updateContrastSlider(QString string)
 {
     contrastSlider->setValue(string.toDouble() * 100);
+    currentContrast = string.toFloat();
+    emit configChanged(currentColorMap, currentBrightness, currentContrast, currentAIE);
 }
 
 void IRCamConfig::on_conformButton_clicked()
@@ -185,59 +202,43 @@ void IRCamConfig::on_colorMapButton_clicked()
     switch (index)
     {
         case 0:{
-                    emit colorMapIndex(WhiteHot);
-                    qDebug()<<temp->objectName(); 
+                    currentColorMap = WhiteHot;
                     break;
                }
         case 1:{
-
-                    emit colorMapIndex(Iron);
-                    qDebug()<<temp->objectName(); 
+                    currentColorMap = Iron;
                     break;
                }
         case 2:{
-
-                    emit colorMapIndex(BlueRed);
-                    qDebug()<<temp->objectName(); 
+                    currentColorMap = BlueRed;
                     break;
                }
         case 3:{
-
-                    emit colorMapIndex(Medical);
-                    qDebug()<<temp->objectName(); 
+                    currentColorMap = Medical;
                     break;
                }
         case 4:{
-
-                    emit colorMapIndex(Purple);
-                    qDebug()<<temp->objectName(); 
+                    currentColorMap = Purple;
                     break;
                }
         case 5:{
-
-                    emit colorMapIndex(PurpleYellow);
-                    qDebug()<<temp->objectName(); 
+                    currentColorMap = PurpleYellow;
                     break;
                }
         case 6:{
-
-                    emit colorMapIndex(DarkBlue);
-                    qDebug()<<temp->objectName(); 
+                    currentColorMap = DarkBlue;
                     break;
                }
         case 7:{
-
-                    emit colorMapIndex(Cyan);
-                    qDebug()<<temp->objectName(); 
+                    currentColorMap = Cyan;
                     break;
                }
         case 8:{
-
-                    emit colorMapIndex(Rainbow);
-                    qDebug()<<temp->objectName(); 
+                    currentColorMap = Rainbow;
                     break;
                }
         default:break;
     }
+    emit configChanged(currentColorMap, currentBrightness, currentContrast, currentAIE);
 }
 

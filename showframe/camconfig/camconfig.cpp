@@ -26,7 +26,8 @@ CamConfig::CamConfig(QWidget *parent) : QTabWidget(parent)
     setStyleSheet("QWidget#ircamconfig{background-color:darkcyan}"
                     "QWidget#normalcamconfig{background-color:darkcyan }");
 
-    connect(ircam, SIGNAL(colorMapIndex(const int)), this, SIGNAL(colorMapIndex(const int)));
+    connect(ircam, SIGNAL(configChanged(const int, const int, const float, const float)), this, SIGNAL(irConfigChanged(const int, 
+                    const int, const float, const float)));
     setCurrentIndex(0);
 }
 

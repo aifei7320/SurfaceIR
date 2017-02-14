@@ -20,7 +20,7 @@ public:
     explicit CamConfig(QWidget *parent=0);
     ~CamConfig();
 signals:
-    void colorMapIndex(const int);
+    void irConfigChanged(const int colorMap, const int brightness, const float contrast, const float aie);
 private:
     IRCamConfig *ircam;
     NormalCamConfig *norcam;

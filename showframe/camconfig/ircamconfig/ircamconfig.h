@@ -36,7 +36,7 @@ public:
 
 signals:
     void conformChanges(double &aie, double &contrast, int &brightness, int &colorMap);
-    void colorMapIndex(const int);
+    void configChanged(const int colorMap, const int brightness, const float contrast, const float aie);
 
 private:
     QSlider *brightnessSlider;
@@ -60,6 +60,10 @@ private:
     QPushButton *conformButton;
 
     QVBoxLayout *mainLayout;
+
+    int currentBrightness;
+    float currentContrast, currentAIE;
+    int currentColorMap;
 
     enum{
     WhiteHot = 0,

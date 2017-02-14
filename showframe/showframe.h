@@ -132,7 +132,7 @@ private:
     
     float m_fContrast;
     int m_iBrightness;
-    ushort m_iAIERange;
+    float m_fAIERange;
     bool isplaying;
     enum{
         WhiteHot = 0,
@@ -171,7 +171,7 @@ private slots:
     void displayFrame();
     void delTipLabel();
     void getImageFrame();
-    void colorMapChange(const int index);
+    void colorMapChange(const int index, int brightness, float contrast, float aie);
     void showImage(ushort *pRecvImage, float *_pTemp, float _centerTemp, ushort _width, ushort _height);
 };
 

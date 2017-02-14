@@ -36,8 +36,8 @@ enum CbColorMapIndex{
 
 ShowFrame::ShowFrame(QWidget *parent) : QLabel(parent),
     isConnected(false), moving(false), isRecording(false),
-    flash(false), m_iColorMap(I3ColorMap::Rainbow), m_bAGC(true),
-    isplaying(false), showTipLabel(false)
+    flash(false), m_iColorMap(I3ColorMap::Rainbow), m_bAGC(false),
+    isplaying(false), showTipLabel(false), m_bAIE(true)
 {
 
     setStyleSheet("QLabel{background-color:darkCyan}");
@@ -379,8 +379,7 @@ void ShowFrame::showImage(ushort *pRecvImage, float *_pTemp, float _centerTemp, 
 
     //Mat matAIE;
     if(m_bAIE){
-        AIE(mat8UC1, matAIE, (double)m_iAIERange / 100.0);
-       cout<<"aie";
+        AIE(mat8UC1, matAIE, m_fAIERange);
     }
     else{
         matAIE = mat8UC1.clone();
@@ -503,16 +502,20 @@ void ShowFrame::on_colorButton_clicked()
     cc->setStyleSheet("QTabWidget#cc{ background-color:darkcyan}");
     cc->resize(200, 400);
     cc->move(mapToGlobal(QPoint(10, 10)));
-    connect(cc, SIGNAL(colorMapIndex(const int)), this, SLOT(colorMapChange(const int)));
+    connect(cc, SIGNAL(irConfigChanged(const int, const int, const float, const float)), this, 
+            SLOT(colorMapChange(const int, const int, const float, const float)));
     cc->show();
     qDebug()<<"asdkfja;";
 }
 
-void ShowFrame::colorMapChange(const int index)
+void ShowFrame::colorMapChange(const int index, const int brightness, const float contrast, const float aie)
 {
     m_iColorMap = index;
+    m_iBrightness = brightness;
+    m_fContrast = contrast;
+    m_fAIERange = aie;
     SetColorTable();
-    qDebug()<<index;
+    qDebug()<< m_iColorMap<< m_iBrightness<< m_fContrast<< m_fAIERange ;
 }
 
 void ShowFrame::on_recordButton_clicked()
