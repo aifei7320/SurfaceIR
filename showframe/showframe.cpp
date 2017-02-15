@@ -21,6 +21,7 @@ extern Mat				m_lutDarkBlue;
 extern Mat				m_lutCyan;
 extern Mat				m_lutRainbow;
 
+
 enum CbColorMapIndex{
     WHITE_HOT = 0,
     IRON,
@@ -37,7 +38,7 @@ enum CbColorMapIndex{
 ShowFrame::ShowFrame(QWidget *parent) : QLabel(parent),
     isConnected(false), moving(false), isRecording(false),
     flash(false), m_iColorMap(I3ColorMap::Rainbow), m_bAGC(false),
-    isplaying(false), showTipLabel(false), m_bAIE(true)
+    isplaying(false), showTipLabel(false), m_bAIE(true), m_fContrast(1.00)
 {
 
     setStyleSheet("QLabel{background-color:darkCyan}");
@@ -184,17 +185,28 @@ bool ShowFrame::event(QEvent *e)
         
         int h = height();
         int w = width();
+        quint8 b=0,g=0,r=0; 
 
-        QImage img = pixmap()->toImage();
+        try{
+            QImage img = pixmap()->toImage();
 
-        int imgx = currentPoint.x() * img.size().width() / w;
-        int imgy = currentPoint.y() * img.size().height() / h;
+            int imgx = currentPoint.x() * img.size().width() / w;
+            int imgy = currentPoint.y() * img.size().height() / h;
+            if(imgx > img.size().width() || imgy > img.size().height())
+                throw(QString("overflow_error"));
 
-        QRgb rgb = img.pixel(imgx, imgy);
+            QRgb rgb = img.pixel(imgx, imgy);
 
-            quint8 b = qBlue(rgb);
-            quint8 g = qGreen(rgb);
-            quint8 r = qRed(rgb);
+            b = qBlue(rgb);
+            g = qGreen(rgb);
+            r = qRed(rgb);
+        }
+        catch(QString exception){
+            qDebug()<<exception<<"position not exist"<<endl;
+        }
+        catch(...){
+            cout<<"position not exist"<<endl;
+        }
 
         QHoverEvent *hoverEvent = static_cast<QHoverEvent*>(e);
         qDebug()<<"event point"<<hoverEvent->pos();
@@ -212,8 +224,15 @@ bool ShowFrame::event(QEvent *e)
 
         tipLabel->setText(QString("temp:\t") + QString::number(currentPointTemperature) + "\n" + QString("r:\t") + QString::number(r) + "\n" +QString("g:\t") + QString::number(g) + "\n" + QString("b:\t") + QString::number(b) );
         //模拟刷新显示
-        tipLabel->hide();
-        tipLabel->show();
+        try{
+            tipLabel->hide();
+            tipLabel->show();
+            if (tipLabel ==NULL)
+                throw(QString("tipLabel not exist"));
+        }
+        catch(QString &exception){
+            qDebug()<<exception;
+        }
 
     }
     return QLabel::event(e);
@@ -297,6 +316,7 @@ void ShowFrame::on_playAndStopButton_clicked()
     if (isplaying){
         playAndStopButton->setText(QString::fromUtf8("开始"));
         isplaying = false;
+        frameTimer->stop();
         if(m_pThrd){
             disconnect(m_pThrd, SIGNAL(SignalShowImg(ushort*, float *,float, ushort, ushort)), this, SLOT(showImage(ushort*, float *,float, ushort, ushort)) );
             m_pThrd->StopStream();
@@ -309,6 +329,7 @@ void ShowFrame::on_playAndStopButton_clicked()
     } else {
         playAndStopButton->setText(QString::fromUtf8("停止"));
         isplaying = true;
+        frameTimer->start(1000);
         if(!m_pThrd){
             m_pThrd = new TE_Thread(this);
             if(m_pThrd->Initialize()){
@@ -355,7 +376,6 @@ void ShowFrame::setDeviceIP(const QString IP)
         qDebug()<<"load failed";
     setPixmap(pixmap);
     mymat=cv::imread("/home/hero/Pictures/1.jpg");
-    frameTimer->start(1000);
 }
 
 void ShowFrame::showImage(ushort *pRecvImage, float *_pTemp, float _centerTemp, ushort _width, ushort _height)
@@ -366,7 +386,15 @@ void ShowFrame::showImage(ushort *pRecvImage, float *_pTemp, float _centerTemp, 
         int x, y;
         x = currentPoint.x() * _width / width();
         y = currentPoint.y() * _height / height();
-        currentPointTemperature = (pRecvImage[_width * (y - 1) + x] - 5000) / 1000.0; 
+        try{
+            currentPointTemperature = (pRecvImage[_width * (y - 1) + x] - 5000) / 1000.0; 
+        }
+        catch(exception &e){
+            currentPointTemperature = 0;
+        }
+        catch(...){
+            currentPointTemperature = 0;
+        }
         QCoreApplication::postEvent(this, new QHoverEvent(QEvent::HoverEnter, currentPoint, startPoint));
         qDebug() <<"x:"<< x<<"y:"<< y<<"temperature"<< currentPointTemperature;
     }
@@ -387,8 +415,9 @@ void ShowFrame::showImage(ushort *pRecvImage, float *_pTemp, float _centerTemp, 
 
     int nWidth, nHeight;
     if(m_bFullScr){
-        nHeight = geometry().height();
-        nWidth = (int)(nHeight / 0.75 + 0.5);
+        //nHeight = geometry().height();
+        //nWidth = (int)(nHeight / 0.75 + 0.5);
+        nWidth = geometry().width(), nHeight = geometry().height();
     }
     else{
         nWidth = geometry().width(), nHeight = geometry().height();
@@ -452,6 +481,11 @@ void ShowFrame::showImage(ushort *pRecvImage, float *_pTemp, float _centerTemp, 
     }
 
     cv::resize(matAlarm, matOut, Size(nWidth, nHeight));
+    if (isRecording && mutex.tryLock()){
+        recordThread->videoMat = matOut;
+        qDebug()<<"copy pixmap"<< recordThread->videoMat.rows;
+        mutex.unlock();
+    }
 
     QPixmap image = cvMatToQPixmap(matOut);
     //DrawInfo(&image, pRecvImage, _centerTemp, nWidth, nHeight);
@@ -505,7 +539,6 @@ void ShowFrame::on_colorButton_clicked()
     connect(cc, SIGNAL(irConfigChanged(const int, const int, const float, const float)), this, 
             SLOT(colorMapChange(const int, const int, const float, const float)));
     cc->show();
-    qDebug()<<"asdkfja;";
 }
 
 void ShowFrame::colorMapChange(const int index, const int brightness, const float contrast, const float aie)
@@ -520,10 +553,23 @@ void ShowFrame::colorMapChange(const int index, const int brightness, const floa
 
 void ShowFrame::on_recordButton_clicked()
 {
-    if(isRecording)
-        isRecording = false;
-    else
-        isRecording = true;
+    if (isConnected){
+        cout<<"create record thread"<<endl;
+
+        if(isRecording){
+            isRecording = false;
+            recordThread->stop();
+            while(recordThread->Recording){
+                sleep(1);
+            }
+            delete recordThread;
+        }
+        else{
+            recordThread = new RecordThread;
+            isRecording = true;
+            recordThread->start();
+        }
+    }
 }
 
 void ShowFrame::on_sourceChangeButton_clicked()

@@ -72,7 +72,7 @@ void TE_Thread::run(){
             //    }
             //    delete pusTemp;
             //}
-
+            qDebug()<<"running";
             emit SignalShowImg(pusImgData, pTemp, fTemp, m_iImgWidth, m_iImgHeight);
             usleep(10000);
         }

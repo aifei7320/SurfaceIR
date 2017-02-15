@@ -10,13 +10,9 @@ QT += core widgets gui network
 include(showframe/showframe.pri)
 
 # Input
-HEADERS +=  mainwindow.h \
-            basicwidget.h\
-            flatpixmapbutton.h
+HEADERS +=  mainwindow.h 
 SOURCES +=  main.cpp \
-            mainwindow.cpp \
-            basicwidget.cpp \
-            flatpixmapbutton.cpp
+            mainwindow.cpp 
 
 unix:{
 message("compile unix")

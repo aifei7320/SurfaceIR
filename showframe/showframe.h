@@ -14,6 +14,7 @@ using namespace std;
 
 #include <QMap>
 #include "cv.hpp"
+#include <QMutex>
 #include <QTimer>
 #include <QImage>
 #include <QFrame>
@@ -49,9 +50,12 @@ using namespace std;
 #include "toolbutton/toolbutton.h"
 #include <QGraphicsColorizeEffect>
 #include "opencv2/imgproc/imgproc.hpp"
+#include "recordthread/recordthread.h"
 #include "connectionconfigwindow/connectionconfigwindow.h"
 
 #include "i3system_TE.h"
+
+class RecordThread;
 
 
 class ShowFrame :  public QLabel
@@ -81,6 +85,9 @@ private:
     QPixmap cvMatToQPixmap( const cv::Mat &inMat );
     QImage  cvMatToQImage( const cv::Mat &inMat );
 
+public:
+    QMutex mutex;
+
 private:
     QHBoxLayout *toolBtnLayout;
     QGridLayout *mainLayout;//主布局
@@ -97,31 +104,33 @@ private:
     QPoint currentPoint;//旋停
 
     QVector<QRect> rectContainer;//矩形
-    QString deviceIP;
-    QColor frameColor;
+    QString deviceIP;//设备ip地址
+    QColor frameColor;//暂时没用
     QTimer *frameTimer;//定义边框闪烁
-    QTimer *tipTimer;
+    QTimer *tipTimer;//提示显示时间定时器
 
-    CamConfig *cc;
+    CamConfig *cc;//相机设置窗口
 
-    ToolButton *recordButton;
-    ToolButton *colorButton;
-    ToolButton *sourceChangeButton;
-    ToolButton *tempChangeButton;
-    ToolButton *saveButton;
-    ToolButton *playAndStopButton;
+    RecordThread *recordThread;
+
+    ToolButton *recordButton;//录像按钮
+    ToolButton *colorButton;//相机设置按钮
+    ToolButton *sourceChangeButton;//切换相机
+    ToolButton *tempChangeButton;//切换温度制式
+    ToolButton *saveButton;//拍照
+    ToolButton *playAndStopButton;//开始和停止显示
 
     QLabel *tipLabel;//tip
-    qreal currentPointTemperature;
-    bool showTipLabel;
-    quint16 *tempImage;
-    TE_Thread *m_pThrd;
+    qreal currentPointTemperature;//记录当前鼠标点击处温度
+    bool showTipLabel;//是否显示tip提示
+    quint16 *tempImage;//红外相机的原始数据是short型
+    TE_Thread *m_pThrd;//红外相机现成
 
     QTcpServer *dataServer;
     QUdpSocket *confSocket;
     QTcpSocket *dataSocket;
     
-    bool m_bFullScr;
+    bool m_bFullScr;//是否全屏
 
     cv::Mat mymat;
 
@@ -163,7 +172,7 @@ private slots:
     void on_sourceChangeButton_clicked();
     void on_tempChangeButton_clicked();
     void display(QImage &image);//更新图像数据
-    void on_playAndStopButton_clicked();
+    void on_playAndStopButton_clicked();//开始和停止
     void on_psbAdd_clicked();//添加设备按钮
     void setDeviceIP(const QString);
     void connectionEstablish();
