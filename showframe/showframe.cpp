@@ -364,10 +364,8 @@ void ShowFrame::setDeviceIP(const QString IP)
     deviceIP = IP;
     confSocket->bind(7320);
 
-    dataServer->listen(QHostAddress(IP), 7320 + myID);
+    dataServer->listen(QHostAddress::Any, 7320 + myID);
     connect(dataServer, SIGNAL(newConnection()), this, SLOT(connectionEstablish()));
-
-
 
 
     QPixmap pixmap(width(), height());
@@ -673,18 +671,22 @@ void ShowFrame::getImageFrame()
     quint64 imgSize;
     unsigned short *pImg;
     QPixmap pix;
+    QImage a;
     float useless=0.0;
     QDataStream in(dataSocket);
     in >> imgSize;
-        qDebug()<<imgSize;
+        qDebug()<<"read"<<imgSize;
     pImg = new unsigned short[imgSize];
     while(dataSocket->bytesAvailable() < imgSize){
         qDebug()<<dataSocket->bytesAvailable(); 
         dataSocket->waitForReadyRead(10000);
     }
-    image = dataSocket->read(221184);
-    
-    memcpy(pImg, image.data(), imgSize);
-    showImage(pImg, &useless, 0.0, 384, 288);
+    image = dataSocket->read(imgSize);
+    a.loadFromData(image);
+    pix.fromImage(a);
+    setPixmap(pix);
+    qDebug()<<image.size();
+    //memcpy(pImg, image.data(), imgSize);
+    //showImage(pImg, &useless, 0.0, 384, 288);
 }
 
