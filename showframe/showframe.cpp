@@ -500,9 +500,9 @@ void ShowFrame::showImage(ushort *pRecvImage, float *_pTemp, float _centerTemp, 
         setPixmap(image);
     }
 
-    delete pRecvImage;
-    if(_pTemp)
-        delete _pTemp;
+    delete[] pRecvImage;
+    //if(_pTemp)
+    //    delete _pTemp;
 
 }
 
@@ -670,17 +670,21 @@ inline QImage  ShowFrame::cvMatToQImage( const cv::Mat &inMat )
 void ShowFrame::getImageFrame()
 {
     QByteArray image;
-    qint64 imgSize;
+    quint64 imgSize;
+    unsigned short *pImg;
     QPixmap pix;
+    float useless=0.0;
     QDataStream in(dataSocket);
     in >> imgSize;
-    qDebug()<<imgSize;
-    while(dataSocket->bytesAvailable() < imgSize)
-        dataSocket->waitForReadyRead(1000);
-    image = dataSocket->readAll();
-    pix.loadFromData(image);
-    setPixmap(pix);
-    //setText(image.data());
-    qDebug()<<"set Text"<<image.size();
+        qDebug()<<imgSize;
+    pImg = new unsigned short[imgSize];
+    while(dataSocket->bytesAvailable() < imgSize){
+        qDebug()<<dataSocket->bytesAvailable(); 
+        dataSocket->waitForReadyRead(10000);
+    }
+    image = dataSocket->read(221184);
+    
+    memcpy(pImg, image.data(), imgSize);
+    showImage(pImg, &useless, 0.0, 384, 288);
 }
 
