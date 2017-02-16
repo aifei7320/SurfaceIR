@@ -31,7 +31,6 @@ void RecordThread::run()
             m_pParentWnd->mutex.tryLock(10);
             iplImg = IplImage(videoMat); 
             m_pParentWnd->mutex.unlock();
-            qDebug()<<"write to file"<< count;
             cvWriteFrame(writer, &iplImg);
             usleep(sleepTime);
     }

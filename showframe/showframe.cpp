@@ -300,8 +300,8 @@ void ShowFrame::mouseDoubleClickEvent(QMouseEvent *e)
                 m_bFullScr = true;
             }
         }
-       if(tipLabel != NULL) 
-           tipLabel->deleteLater();
+       //if(tipLabel != NULL) 
+       //    tipLabel->deleteLater();
     }
 
 }
@@ -340,6 +340,9 @@ void ShowFrame::on_playAndStopButton_clicked()
                 delete m_pThrd;
                 m_pThrd = NULL;
                 QMessageBox::warning(this, "error", "device open failed!");
+                playAndStopButton->setText(QString::fromUtf8("开始"));
+                frameTimer->stop();
+                isplaying = false;
                 cout << "Thread not generated" << endl;
             }
         }
@@ -396,7 +399,6 @@ void ShowFrame::showImage(ushort *pRecvImage, float *_pTemp, float _centerTemp, 
             currentPointTemperature = 0;
         }
         QCoreApplication::postEvent(this, new QHoverEvent(QEvent::HoverEnter, currentPoint, startPoint));
-        qDebug() <<"x:"<< x<<"y:"<< y<<"temperature"<< currentPointTemperature;
     }
     cv::Mat matAIE(_height, _width, CV_8UC1);
     cv::Mat mat16(_height, _width, CV_16U, pRecvImage), mat8UC1, mat8ColorMap, matOut;
@@ -473,21 +475,21 @@ void ShowFrame::showImage(ushort *pRecvImage, float *_pTemp, float _centerTemp, 
 
      //Alarm
     Mat matAlarm(mat8ColorMap.size(), CV_8UC3);
-    if(m_bAlarm){
-        //SetAlarm(mat8ColorMap, &matAlarm, _pTemp, m_fAlarm);
-    }
-    else{
+    //if(m_bAlarm){
+    //    //SetAlarm(mat8ColorMap, &matAlarm, _pTemp, m_fAlarm);
+    //}
+    //else{
         matAlarm = mat8ColorMap.clone();
-    }
+    //}
 
-    cv::resize(matAlarm, matOut, Size(nWidth, nHeight));
+    //cv::resize(matAlarm, matOut, Size(nWidth, nHeight));
     if (isRecording && mutex.tryLock()){
         recordThread->videoMat = matOut;
         qDebug()<<"copy pixmap"<< recordThread->videoMat.rows;
         mutex.unlock();
     }
 
-    QPixmap image = cvMatToQPixmap(matOut);
+    QPixmap image = cvMatToQPixmap(matAlarm);
     //DrawInfo(&image, pRecvImage, _centerTemp, nWidth, nHeight);
 
     // Display
