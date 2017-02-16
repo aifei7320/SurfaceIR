@@ -49,6 +49,9 @@ ShowFrame::ShowFrame(QWidget *parent) : QLabel(parent),
 
     frameTimer = new QTimer;
     tipTimer = new QTimer;
+    tipLabel = new QLabel;
+    tipLabel->hide();
+    tipLabel->setWindowFlags(Qt::FramelessWindowHint); 
     
     mainLayout = new QGridLayout;
     mainLayout->setContentsMargins(5, 0, 5, 0);
@@ -137,9 +140,7 @@ void ShowFrame::enterEvent(QEvent *e)
 {
     Q_UNUSED(e)
     if (isConnected){
-        tipLabel = new QLabel;
         qDebug()<<"new QLabel";
-        tipLabel->setWindowFlags(Qt::FramelessWindowHint); 
         connect(tipTimer, SIGNAL(timeout()), this, SLOT(delTipLabel()));
     }
 }
@@ -150,7 +151,6 @@ void ShowFrame::leaveEvent(QEvent *e)
     if (isConnected){
         qDebug()<<"del QLabel";
         disconnect(tipTimer, SIGNAL(timeout()), this, SLOT(delTipLabel()));
-        tipLabel->deleteLater();
     }
 }
 
