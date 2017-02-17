@@ -417,7 +417,7 @@ void ShowFrame::showImage(ushort *pRecvImage, float *_pTemp, float _centerTemp, 
     if(m_bFullScr){
         //nHeight = geometry().height();
         //nWidth = (int)(nHeight / 0.75 + 0.5);
-        nWidth = geometry().width(), nHeight = geometry().height();
+        nWidth = 512, nHeight = 384;
     }
     else{
         nWidth = geometry().width(), nHeight = geometry().height();
@@ -483,7 +483,6 @@ void ShowFrame::showImage(ushort *pRecvImage, float *_pTemp, float _centerTemp, 
     //cv::resize(matAlarm, matOut, Size(nWidth, nHeight));
     if (isRecording && mutex.tryLock()){
         recordThread->videoMat = matOut;
-        qDebug()<<"copy pixmap"<< recordThread->videoMat.rows;
         mutex.unlock();
     }
 
@@ -498,7 +497,6 @@ void ShowFrame::showImage(ushort *pRecvImage, float *_pTemp, float _centerTemp, 
         setPixmap(image);
     }
 
-    qDebug()<<pRecvImage[_width * _height - 1]<<image.size();
     delete[] pRecvImage;
     //if(_pTemp)
     //    delete _pTemp;
@@ -678,7 +676,6 @@ void ShowFrame::getImageFrame()
     float useless=0.0;
     QDataStream in(dataSocket);
     in >> imgSize;
-    qDebug()<<"read"<<imgSize;
     pImg = new unsigned short[imgSize];
     while(dataSocket->bytesAvailable() < imgSize){
         dataSocket->waitForReadyRead(100);
@@ -686,7 +683,6 @@ void ShowFrame::getImageFrame()
             break;
     }
     image = dataSocket->read(imgSize);
-    qDebug()<<image.size();
     memcpy(pImg, image.data(), imgSize);
     showImage(pImg, &useless, 0.0, 384, 288);
 }
