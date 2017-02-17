@@ -498,6 +498,7 @@ void ShowFrame::showImage(ushort *pRecvImage, float *_pTemp, float _centerTemp, 
         setPixmap(image);
     }
 
+    qDebug()<<pRecvImage[_width * _height - 1]<<image.size();
     delete[] pRecvImage;
     //if(_pTemp)
     //    delete _pTemp;
@@ -587,12 +588,14 @@ void ShowFrame::connectionEstablish()
     dataSocket = dataServer->nextPendingConnection();
     connect(dataSocket, SIGNAL(readyRead()), this, SLOT(getImageFrame()));
     connect(dataSocket, SIGNAL(disconnected()), this, SLOT(connectionStoped()));
+    isConnected=true;
     qDebug()<<"connection Established";
 }
 
 void ShowFrame::connectionStoped()
 {
     disconnect(dataSocket, SIGNAL(readyRead()), this, SLOT(getImageFrame()));
+    isConnected=false;
     qDebug()<<"connection Stoped";
 }
 
@@ -671,22 +674,20 @@ void ShowFrame::getImageFrame()
     quint64 imgSize;
     unsigned short *pImg;
     QPixmap pix;
-    QImage a;
+    QImage temp;
     float useless=0.0;
     QDataStream in(dataSocket);
     in >> imgSize;
-        qDebug()<<"read"<<imgSize;
+    qDebug()<<"read"<<imgSize;
     pImg = new unsigned short[imgSize];
     while(dataSocket->bytesAvailable() < imgSize){
-        qDebug()<<dataSocket->bytesAvailable(); 
-        dataSocket->waitForReadyRead(10000);
+        dataSocket->waitForReadyRead(100);
+        if(!isConnected)
+            break;
     }
     image = dataSocket->read(imgSize);
-    a.loadFromData(image);
-    pix.fromImage(a);
-    setPixmap(pix);
     qDebug()<<image.size();
-    //memcpy(pImg, image.data(), imgSize);
-    //showImage(pImg, &useless, 0.0, 384, 288);
+    memcpy(pImg, image.data(), imgSize);
+    showImage(pImg, &useless, 0.0, 384, 288);
 }
 
