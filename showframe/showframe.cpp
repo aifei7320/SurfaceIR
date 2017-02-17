@@ -480,7 +480,7 @@ void ShowFrame::showImage(ushort *pRecvImage, float *_pTemp, float _centerTemp, 
         matAlarm = mat8ColorMap.clone();
     //}
 
-    //cv::resize(matAlarm, matOut, Size(nWidth, nHeight));
+    cv::resize(matAlarm, matOut, Size(nWidth, nHeight));
     if (isRecording && mutex.tryLock()){
         recordThread->videoMat = matOut;
         mutex.unlock();
@@ -587,6 +587,8 @@ void ShowFrame::connectionEstablish()
     connect(dataSocket, SIGNAL(readyRead()), this, SLOT(getImageFrame()));
     connect(dataSocket, SIGNAL(disconnected()), this, SLOT(connectionStoped()));
     isConnected=true;
+    isplaying = true;
+    frameTimer->start(1000);
     qDebug()<<"connection Established";
 }
 
@@ -594,6 +596,8 @@ void ShowFrame::connectionStoped()
 {
     disconnect(dataSocket, SIGNAL(readyRead()), this, SLOT(getImageFrame()));
     isConnected=false;
+    isplaying = false;
+    frameTimer->stop();
     qDebug()<<"connection Stoped";
 }
 
