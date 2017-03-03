@@ -87,6 +87,7 @@ void ToolButton::mousePressEvent(QMouseEvent *e)
 
 void ToolButton::paintEvent(QPaintEvent *e)
 {
+    Q_UNUSED(e)
     QPainter painter(this);
     QPen pen;
     pen.setColor(QColor(0, 255, 0, 50));

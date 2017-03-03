@@ -313,6 +313,7 @@ void ShowFrame::display(QImage &image)
 
 void ShowFrame::on_playAndStopButton_clicked()
 {
+#if 0
     if (isplaying){
         playAndStopButton->setText(QString::fromUtf8("开始"));
         isplaying = false;
@@ -347,6 +348,7 @@ void ShowFrame::on_playAndStopButton_clicked()
             }
         }
     }
+#endif
 }
 
 void ShowFrame::on_psbAdd_clicked()
@@ -417,7 +419,7 @@ void ShowFrame::showImage(ushort *pRecvImage, float *_pTemp, float _centerTemp, 
     if(m_bFullScr){
         //nHeight = geometry().height();
         //nWidth = (int)(nHeight / 0.75 + 0.5);
-        nWidth = geometry().width(), nHeight = geometry().height();
+        nWidth = 512, nHeight = 384;
     }
     else{
         nWidth = geometry().width(), nHeight = geometry().height();
@@ -480,10 +482,9 @@ void ShowFrame::showImage(ushort *pRecvImage, float *_pTemp, float _centerTemp, 
         matAlarm = mat8ColorMap.clone();
     //}
 
-    //cv::resize(matAlarm, matOut, Size(nWidth, nHeight));
+    cv::resize(matAlarm, matOut, Size(nWidth, nHeight));
     if (isRecording && mutex.tryLock()){
         recordThread->videoMat = matOut;
-        qDebug()<<"copy pixmap"<< recordThread->videoMat.rows;
         mutex.unlock();
     }
 
@@ -498,7 +499,6 @@ void ShowFrame::showImage(ushort *pRecvImage, float *_pTemp, float _centerTemp, 
         setPixmap(image);
     }
 
-    qDebug()<<pRecvImage[_width * _height - 1]<<image.size();
     delete[] pRecvImage;
     //if(_pTemp)
     //    delete _pTemp;
@@ -589,6 +589,8 @@ void ShowFrame::connectionEstablish()
     connect(dataSocket, SIGNAL(readyRead()), this, SLOT(getImageFrame()));
     connect(dataSocket, SIGNAL(disconnected()), this, SLOT(connectionStoped()));
     isConnected=true;
+    isplaying = true;
+    frameTimer->start(1000);
     qDebug()<<"connection Established";
 }
 
@@ -596,6 +598,8 @@ void ShowFrame::connectionStoped()
 {
     disconnect(dataSocket, SIGNAL(readyRead()), this, SLOT(getImageFrame()));
     isConnected=false;
+    isplaying = false;
+    frameTimer->stop();
     qDebug()<<"connection Stoped";
 }
 
@@ -678,7 +682,6 @@ void ShowFrame::getImageFrame()
     float useless=0.0;
     QDataStream in(dataSocket);
     in >> imgSize;
-    qDebug()<<"read"<<imgSize;
     pImg = new unsigned short[imgSize];
     while(dataSocket->bytesAvailable() < imgSize){
         dataSocket->waitForReadyRead(100);
@@ -686,7 +689,6 @@ void ShowFrame::getImageFrame()
             break;
     }
     image = dataSocket->read(imgSize);
-    qDebug()<<image.size();
     memcpy(pImg, image.data(), imgSize);
     showImage(pImg, &useless, 0.0, 384, 288);
 }
