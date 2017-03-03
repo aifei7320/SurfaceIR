@@ -313,6 +313,7 @@ void ShowFrame::display(QImage &image)
 
 void ShowFrame::on_playAndStopButton_clicked()
 {
+#if 0
     if (isplaying){
         playAndStopButton->setText(QString::fromUtf8("开始"));
         isplaying = false;
@@ -347,6 +348,7 @@ void ShowFrame::on_playAndStopButton_clicked()
             }
         }
     }
+#endif
 }
 
 void ShowFrame::on_psbAdd_clicked()
